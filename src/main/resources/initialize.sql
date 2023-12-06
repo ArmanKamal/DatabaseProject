@@ -16,12 +16,12 @@ CREATE TABLE IF NOT EXISTS Departments
 -- Table for Programs
 CREATE TABLE IF NOT EXISTS Programs
 (
-    program_id         INT PRIMARY KEY,
+    program_id INT PRIMARY KEY AUTO_INCREMENT,
     program_name       VARCHAR(255) UNIQUE NOT NULL,
-    department_code    CHAR(4),
-    head_of_program_id VARCHAR(20), -- Reference to Persons table
+    department_code    CHAR(4) NOT NULL,
+    head_of_program_id  VARCHAR(20) UNIQUE NOT NULL,
     FOREIGN KEY (department_code) REFERENCES Departments (department_code),
-    FOREIGN KEY (head_of_program_id) REFERENCES Persons (university_id)
+    FOREIGN KEY (head_of_program_id)  REFERENCES Persons (university_id)
 );
 
 -- Table for FacultyMembers

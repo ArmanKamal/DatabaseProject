@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Add Bootstrap CSS link -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>University System</title>
+</head>
+
+<body>
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h2>University System By Arman Kamal</h2>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title text-center mb-4">Department Form</h4>
+                    <form class="form" th:action="@{/processDepartmentForm}" th:object="${Departments}" method="post">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="departmentCode"
+                                   placeholder="Enter Department Code" th:field="*{department_code}"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="departmentName"
+                                   placeholder="Enter Department Name" th:field="*{department_name}"
+                                   required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Create Department</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title text-center mb-4">Person Form</h4>
+                    <form class="form" th:action="@{/processPersonForm}" th:object="${Persons}" method="post">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Enter University Id" id="universityId"
+                                   th:field="*{university_id}"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Enter Person Name" id="personName"
+                                   th:field="*{person_name}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="text" class="form-control" placeholder="Enter Person Email" id="email"
+                                   th:field="*{email}" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Person</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-3 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title text-center mb-4">Program Form</h4>
+                    <form class="form" th:action="@{/processProgramForm}" th:object="${Programs}" method="post">
+                        <div class="form-group">
+                            <label for="programName">Program Name:</label>
+                            <input type="text" class="form-control" id="programName" th:field="*{programName}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="departmentCode">Select Department:</label>
+                            <select class="form-control" id="departmentCode" th:field="*{departmentCode}" required>
+                                <option th:each="department : ${departments}" th:value="${department.department_code}"
+                                        th:text="${department.department_name}"></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="headOfProgram">Select Head of Program:</label>
+                            <select class="form-control" id="headOfProgram" th:field="*{headOfProgramId}" required>
+                                <option th:each="person : ${persons}" th:value="${person.university_id}"
+                                        th:text="${person.person_name}"></option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-info">Create Program</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div th:if="${successMessage}" class="alert alert-success">
+                <p th:text="${successMessage}"></p>
+            </div>
+            <div th:if="${failureMessage}" class="alert alert-danger">
+                <p th:text="${failureMessage}"></p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Add Bootstrap JS and Popper.js for Bootstrap functionality -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+
+</html>
+
