@@ -1,5 +1,5 @@
 -- Table for Persons
-CREATE TABLE Persons
+CREATE TABLE IF NOT EXISTS Persons
 (
     university_id VARCHAR(20) PRIMARY KEY,
     person_name   VARCHAR(255)        NOT NULL,
@@ -7,16 +7,14 @@ CREATE TABLE Persons
 );
 
 -- Table for Departments
-CREATE TABLE Departments
+CREATE TABLE IF NOT EXISTS Departments
 (
     department_code       CHAR(4) PRIMARY KEY,
-    department_name       VARCHAR(255) UNIQUE NOT NULL,
-    head_of_department_id VARCHAR(20), -- Reference to Persons table
-    FOREIGN KEY (head_of_department_id) REFERENCES Persons (university_id)
+    department_name       VARCHAR(255) UNIQUE NOT NULL
 );
 
 -- Table for Programs
-CREATE TABLE Programs
+CREATE TABLE IF NOT EXISTS Programs
 (
     program_id         INT PRIMARY KEY,
     program_name       VARCHAR(255) UNIQUE NOT NULL,
@@ -27,29 +25,28 @@ CREATE TABLE Programs
 );
 
 -- Table for FacultyMembers
-CREATE TABLE FacultyMembers
+CREATE TABLE IF NOT EXISTS FacultyMembers
 (
     faculty_id      INT PRIMARY KEY,
     faculty_name    VARCHAR(255) NOT NULL,
     email_address   VARCHAR(255) NOT NULL,
-    rank            ENUM('full', 'associate', 'assistant', 'adjunct') NOT NULL,
+    faculty_rank  ENUM('full', 'associate', 'assistant', 'adjunct') NOT NULL,
     department_code CHAR(4),
     FOREIGN KEY (department_code) REFERENCES Departments (department_code)
 );
 
 -- Table for Courses
-CREATE TABLE Courses
+CREATE TABLE IF NOT EXISTS Courses
 (
     course_id          CHAR(8) PRIMARY KEY,
     course_title       VARCHAR(255) NOT NULL,
     course_description TEXT,
     department_code    CHAR(4),
-    PRIMARY KEY (course_id),
     FOREIGN KEY (department_code) REFERENCES Departments (department_code)
 );
 
--- Table for Sections
-CREATE TABLE Sections
+-- Table for Sections/
+CREATE TABLE IF NOT EXISTS Sections
 (
     offering_id       INT PRIMARY KEY,
     course_id         CHAR(8)    NOT NULL,
@@ -57,30 +54,28 @@ CREATE TABLE Sections
     section_number    INT UNIQUE NOT NULL,
     faculty_id        INT        NOT NULL,
     enrolled_students INT        NOT NULL,
-    PRIMARY KEY (offering_id),
     FOREIGN KEY (course_id) REFERENCES Courses (course_id),
     FOREIGN KEY (faculty_id) REFERENCES FacultyMembers (faculty_id)
 );
 
 -- Table for LearningObjectives
-CREATE TABLE LearningObjectives
+CREATE TABLE IF NOT EXISTS LearningObjectives
 (
     objective_code VARCHAR(20) PRIMARY KEY,
     description    TEXT NOT NULL
 );
 
 -- Table for SubObjectives
-CREATE TABLE SubObjectives
+CREATE TABLE IF NOT EXISTS SubObjectives
 (
     sub_objective_code INT PRIMARY KEY,
     objective_code     VARCHAR(20),
     description        TEXT NOT NULL,
-    PRIMARY KEY (objective_code, sub_objective_code),
     FOREIGN KEY (objective_code) REFERENCES LearningObjectives (objective_code)
 );
 
 -- Table for ProgramCourses
-CREATE TABLE ProgramCourses
+CREATE TABLE IF NOT EXISTS ProgramCourses
 (
     program_id INT,
     course_id  CHAR(8),
@@ -90,7 +85,7 @@ CREATE TABLE ProgramCourses
 );
 
 -- Table for ProgramObjectives
-CREATE TABLE ProgramObjectives
+CREATE TABLE IF NOT EXISTS ProgramObjectives
 (
     program_id         INT,
     course_id          CHAR(8),
@@ -104,13 +99,12 @@ CREATE TABLE ProgramObjectives
 );
 
 -- Table for EvaluationResults
-CREATE TABLE EvaluationResults
+CREATE TABLE IF NOT EXISTS EvaluationResults
 (
     offering_id        INT PRIMARY KEY,
     sub_objective_code INT,
     evaluation_method  VARCHAR(50) NOT NULL,
     students_met       INT         NOT NULL,
-    PRIMARY KEY (offering_id),
     FOREIGN KEY (sub_objective_code) REFERENCES SubObjectives (sub_objective_code),
     FOREIGN KEY (offering_id) REFERENCES Sections (offering_id)
 );
