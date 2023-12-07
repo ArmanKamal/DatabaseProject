@@ -9,8 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SubObjectives {
+public class EvaluationResults {
+    private Long sectionNumber;
     private String subObjectiveCode;
-    private String objectiveCode;
-    private String description;
+    private String evaluationMethod;
+    private Long studentsMet;
 }

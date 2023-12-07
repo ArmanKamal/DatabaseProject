@@ -30,13 +30,19 @@ public class MainController {
                                  @ModelAttribute("Courses") Courses courses,
                                  @ModelAttribute("Sections") Sections sections,
                                  @ModelAttribute("LearningObjectives") LearningObjectives learningObjectives,
-                                 @ModelAttribute("SubObjectives") SubObjectives subObjectives) {
+                                 @ModelAttribute("SubObjectives") SubObjectives subObjectives,
+                                 @ModelAttribute("ProgramCourses") ProgramCourses programCourses,
+                                 @ModelAttribute("ProgramObjectives") ProgramObjectives programObjectives,
+                                 @ModelAttribute("EvaluationResults") EvaluationResults evaluationResults) {
         ModelAndView mav = new ModelAndView("index");
         mav.addObject("departments", getDepartments());
         mav.addObject("courses", getCourses());
         mav.addObject("faculties", getFacultyMembers());
         mav.addObject("programs", getPrograms());
+        mav.addObject("sections", getSections());
         mav.addObject("learningObjectives", getObjectives());
+        mav.addObject("subObjectives", getSubObjectives());
+        mav.addObject("programCourses", getProgramCourses());
 
         return mav;
     }
@@ -126,11 +132,11 @@ public class MainController {
     @PostMapping("/processSectionForm")
     public String processSectionForm(@ModelAttribute("Sections") Sections section, RedirectAttributes redirectAttributes) {
         try {
-            jdbcTemplate.update("INSERT INTO Sections (course_id, semester, faculty_id, enrolled_students, year) VALUES (?, ?, ?, ?,?)",
+            jdbcTemplate.update("INSERT INTO Sections (course_id, semester, faculty_id, enrolled_students, year) VALUES (?, ?, ?, ?, ?)",
                     section.getCourseId(), section.getSemester().name(), section.getFacultyId(), section.getEnrolledStudents(), section.getYear());
 
             String successMessage = "Section created successfully for course ID: " + section.getCourseId() +
-                    ", Semester: " + section.getSemester() + ", Section Number: " + section.getSectionNumber();
+                    ", Semester: " + section.getSemester();
             redirectAttributes.addFlashAttribute("successMessage", successMessage);
         } catch (Exception e) {
             String failure = "Failed because of " + e;
@@ -142,7 +148,7 @@ public class MainController {
     @PostMapping("/processLearningObjective")
     public String processSectionForm(@ModelAttribute("LearningObjectives") LearningObjectives learningObjectives, RedirectAttributes redirectAttributes) {
         try {
-            jdbcTemplate.update("INSERT INTO LearningObjectives (objective_code,program_id) VALUES (?,?)",
+            jdbcTemplate.update("INSERT INTO LearningObjectives (objective_code, program_id) VALUES (?,?)",
                     learningObjectives.getObjectiveCode(), learningObjectives.getProgramId());
 
             String successMessage = "Learning Objectives created successfully for program ID: " + learningObjectives.getProgramId();
@@ -161,6 +167,51 @@ public class MainController {
                     subObjectives.getObjectiveCode(), subObjectives.getDescription());
 
             String successMessage = "Sub Objectives created successfully for objective ID: " + subObjectives.getObjectiveCode();
+            redirectAttributes.addFlashAttribute("successMessage", successMessage);
+        } catch (Exception e) {
+            String failure = "Failed because of " + e;
+            redirectAttributes.addFlashAttribute("failureMessage", failure);
+        }
+        return "redirect:/";
+    }
+
+    @PostMapping("/processProgramCoursesForm")
+    public String processSectionForm(@ModelAttribute("ProgramCourses") ProgramCourses programCourses, RedirectAttributes redirectAttributes) {
+        try {
+            jdbcTemplate.update("INSERT INTO ProgramCourses (program_id, course_id) VALUES (?, ?)",
+                    programCourses.getProgramId(), programCourses.getCourseId());
+
+            String successMessage = "Program-Course pair successfully made for program ID " + programCourses.getProgramId() + " and course ID " + programCourses.getCourseId();
+            redirectAttributes.addFlashAttribute("successMessage", successMessage);
+        } catch (Exception e) {
+            String failure = "Failed because of " + e;
+            redirectAttributes.addFlashAttribute("failureMessage", failure);
+        }
+        return "redirect:/";
+    }
+
+    @PostMapping("/processProgramObjectivesForm")
+    public String processSectionForm(@ModelAttribute("ProgramObjectives") ProgramObjectives programObjectives, RedirectAttributes redirectAttributes) {
+        try {
+            jdbcTemplate.update("INSERT INTO ProgramObjectives (program_id, course_id, objective_code, sub_objective_code) VALUES (?, ?, ?, ?)",
+                    programObjectives.getProgramId(), programObjectives.getCourseId(), programObjectives.getObjectiveCode(), programObjectives.getSubObjectiveCode());
+
+            String successMessage = "Subobjective " + programObjectives.getSubObjectiveCode() + " of Objective " + programObjectives.getObjectiveCode() + " successfully made for Program-Course pair " + programObjectives.getProgramId() + " and " + programObjectives.getCourseId();
+            redirectAttributes.addFlashAttribute("successMessage", successMessage);
+        } catch (Exception e) {
+            String failure = "Failed because of " + e;
+            redirectAttributes.addFlashAttribute("failureMessage", failure);
+        }
+        return "redirect:/";
+    }
+
+    @PostMapping("/processEvaluationForm")
+    public String processSectionForm(@ModelAttribute("EvaluationResults") EvaluationResults evaluationResults, RedirectAttributes redirectAttributes) {
+        try {
+            jdbcTemplate.update("INSERT INTO EvaluationResults (section_number, sub_objective_code, evaluation_method, students_met) VALUES (?, ?, ?, ?)",
+                    evaluationResults.getSectionNumber(), evaluationResults.getSubObjectiveCode(), evaluationResults.getEvaluationMethod(), evaluationResults.getStudentsMet());
+
+            String successMessage = "Successfully posted evaluation results for subobjective " + evaluationResults.getSubObjectiveCode() + " for section " + evaluationResults.getSectionNumber();
             redirectAttributes.addFlashAttribute("successMessage", successMessage);
         } catch (Exception e) {
             String failure = "Failed because of " + e;
@@ -217,11 +268,39 @@ public class MainController {
                 .build());
     }
 
+    private List<Sections> getSections() {
+        String sql = "SELECT * FROM Sections";
+        return jdbcTemplate.query(sql, (resultSet, rowNum) -> Sections.builder()
+                .sectionNumber(Long.valueOf(resultSet.getString("section_number")))
+                .courseId(resultSet.getString("course_id"))
+                .semester(Semester.getByLabel(resultSet.getString("semester")))
+                .facultyId(resultSet.getString("faculty_id"))
+                .enrolledStudents(resultSet.getString("enrolled_students"))
+                .year(resultSet.getString("year"))
+                .build());
+    }
+
     private List<LearningObjectives> getObjectives() {
         String sql = "SELECT * FROM LearningObjectives";
         return jdbcTemplate.query(sql, (resultSet, rowNum) -> LearningObjectives.builder()
                 .objectiveCode(resultSet.getString("objective_code"))
                 .programId(resultSet.getString("program_id"))
+                .build());
+    }
+
+    private List<SubObjectives> getSubObjectives() {
+        String sql = "SELECT * FROM SubObjectives";
+        return jdbcTemplate.query(sql, (resultSet, rowNum) -> SubObjectives.builder()
+                .subObjectiveCode(resultSet.getString("sub_objective_code"))
+                .objectiveCode(resultSet.getString("objective_code"))
+                .build());
+    }
+
+    private List<ProgramCourses> getProgramCourses() {
+        String sql = "SELECT * FROM ProgramCourses";
+        return jdbcTemplate.query(sql, (resultSet, rowNum) -> ProgramCourses.builder()
+                .programId(resultSet.getString("program_id"))
+                .courseId(resultSet.getString("course_id"))
                 .build());
     }
 }

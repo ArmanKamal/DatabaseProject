@@ -9,8 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SubObjectives {
-    private String subObjectiveCode;
+public class ProgramObjectives {
+    private String programId;
+    private String courseId;
     private String objectiveCode;
-    private String description;
+    private String subObjectiveCode;
 }

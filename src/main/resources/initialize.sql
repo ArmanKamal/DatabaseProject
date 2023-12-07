@@ -35,7 +35,6 @@ CREATE TABLE IF NOT EXISTS Programs
     FOREIGN KEY (head_of_program_id) REFERENCES FacultyMembers (faculty_id)
 );
 
-
 -- Table for Courses
 CREATE TABLE IF NOT EXISTS Courses
 (
