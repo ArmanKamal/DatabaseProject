@@ -12,7 +12,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.Random;
 
 @Controller
 public class MainController {
@@ -29,12 +28,17 @@ public class MainController {
                                  @ModelAttribute("Programs") Programs programs,
                                  @ModelAttribute("FacultyMembers") FacultyMembers facultyMembers,
                                  @ModelAttribute("Courses") Courses courses,
-                                 @ModelAttribute("Sections") Sections sections) {
+                                 @ModelAttribute("Sections") Sections sections,
+                                 @ModelAttribute("LearningObjectives") LearningObjectives learningObjectives,
+                                 @ModelAttribute("SubObjectives") SubObjectives subObjectives) {
         ModelAndView mav = new ModelAndView("index");
         mav.addObject("departments", getDepartments());
         mav.addObject("persons", getPersons());
         mav.addObject("courses", getCourses());
         mav.addObject("faculties", getFacultyMembers());
+        mav.addObject("programs", getPrograms());
+        mav.addObject("learningObjectives", getObjectives());
+
         return mav;
     }
 
@@ -105,7 +109,7 @@ public class MainController {
     @PostMapping("/processCourseForm")
     public String processCourseForm(@ModelAttribute("Courses") Courses course, RedirectAttributes redirectAttributes) {
         try {
-            String courseId = course.getDepartmentCode()+course.getCourseId();
+            String courseId = course.getDepartmentCode() + course.getCourseId();
             course.setCourseId(courseId);
 
             jdbcTemplate.update("INSERT INTO Courses (course_id, department_code, course_title,course_description) VALUES (?, ?, ?,?)",
@@ -119,6 +123,7 @@ public class MainController {
         }
         return "redirect:/";
     }
+
     @PostMapping("/processSectionForm")
     public String processSectionForm(@ModelAttribute("Sections") Sections section, RedirectAttributes redirectAttributes) {
         try {
@@ -127,6 +132,36 @@ public class MainController {
 
             String successMessage = "Section created successfully for course ID: " + section.getCourseId() +
                     ", Semester: " + section.getSemester() + ", Section Number: " + section.getSectionNumber();
+            redirectAttributes.addFlashAttribute("successMessage", successMessage);
+        } catch (Exception e) {
+            String failure = "Failed because of " + e;
+            redirectAttributes.addFlashAttribute("failureMessage", failure);
+        }
+        return "redirect:/";
+    }
+
+    @PostMapping("/processLearningObjective")
+    public String processSectionForm(@ModelAttribute("LearningObjectives") LearningObjectives learningObjectives, RedirectAttributes redirectAttributes) {
+        try {
+            jdbcTemplate.update("INSERT INTO LearningObjectives (objective_code,program_id) VALUES (?,?)",
+                    learningObjectives.getObjectiveCode(), learningObjectives.getProgramId());
+
+            String successMessage = "Learning Objectives created successfully for program ID: " + learningObjectives.getProgramId();
+            redirectAttributes.addFlashAttribute("successMessage", successMessage);
+        } catch (Exception e) {
+            String failure = "Failed because of " + e;
+            redirectAttributes.addFlashAttribute("failureMessage", failure);
+        }
+        return "redirect:/";
+    }
+
+    @PostMapping("/processLearningSubObjective")
+    public String processSectionForm(@ModelAttribute("SubObjectives") SubObjectives subObjectives, RedirectAttributes redirectAttributes) {
+        try {
+            jdbcTemplate.update("INSERT INTO SubObjectives (objective_code, description) VALUES (?, ?)",
+                    subObjectives.getObjectiveCode(), subObjectives.getDescription());
+
+            String successMessage = "Sub Objectives created successfully for objective ID: " + subObjectives.getObjectiveCode();
             redirectAttributes.addFlashAttribute("successMessage", successMessage);
         } catch (Exception e) {
             String failure = "Failed because of " + e;
@@ -161,6 +196,7 @@ public class MainController {
                 .departmentCode(resultSet.getString("department_code"))
                 .build());
     }
+
     private List<FacultyMembers> getFacultyMembers() {
         String sql = "SELECT * FROM FacultyMembers";
         return jdbcTemplate.query(sql, (resultSet, rowNum) -> FacultyMembers.builder()
@@ -169,6 +205,24 @@ public class MainController {
                 .facultyRank(FacultyRank.getByLabel(resultSet.getString("faculty_rank")))
                 .emailAddress(resultSet.getString("email_address"))
                 .departmentCode(resultSet.getString("department_code"))
+                .build());
+    }
+
+    private List<Programs> getPrograms() {
+        String sql = "SELECT * FROM Programs";
+        return jdbcTemplate.query(sql, (resultSet, rowNum) -> Programs.builder()
+                .programId(Long.valueOf(resultSet.getString("program_id")))
+                .programName(resultSet.getString("program_name"))
+                .departmentCode(resultSet.getString("department_code"))
+                .headOfProgramId(resultSet.getString("head_of_program_id"))
+                .build());
+    }
+
+    private List<LearningObjectives> getObjectives() {
+        String sql = "SELECT * FROM LearningObjectives";
+        return jdbcTemplate.query(sql, (resultSet, rowNum) -> LearningObjectives.builder()
+                .objectiveCode(resultSet.getString("objective_code"))
+                .programId(resultSet.getString("program_id"))
                 .build());
     }
 }

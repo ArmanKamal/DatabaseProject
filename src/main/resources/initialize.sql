@@ -61,13 +61,15 @@ CREATE TABLE IF NOT EXISTS Sections
 CREATE TABLE IF NOT EXISTS LearningObjectives
 (
     objective_code VARCHAR(20) PRIMARY KEY,
-    description    TEXT NOT NULL
+    program_id     INT  ,
+    FOREIGN KEY (program_id) REFERENCES Programs (program_id)
+
 );
 
 -- Table for SubObjectives
 CREATE TABLE IF NOT EXISTS SubObjectives
 (
-    sub_objective_code INT PRIMARY KEY,
+    sub_objective_code INT AUTO_INCREMENT PRIMARY KEY,
     objective_code     VARCHAR(20),
     description        TEXT NOT NULL,
     FOREIGN KEY (objective_code) REFERENCES LearningObjectives (objective_code)
