@@ -17,7 +17,7 @@ public class DataEntryForm {
     private String sectionName;
     private String learningObjectives;
     private List<String> programCourses;
-    private List<String> courseProgramObjectives;
+    private List<String> programObjectives;
     private String evaluationResults;
 
 }

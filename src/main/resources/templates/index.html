@@ -85,7 +85,7 @@
                                             th:text="${department.departmentName}"></option>
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-info">Create Program</button>
+                            <button type="submit" class="btn btn-info">Create Faculty</button>
                         </form>
                     </div>
                 </div>
@@ -111,6 +111,7 @@
                             </div>
 
                             <div class="form-group">
+                                <!-- Can a faculty member be the head of more than one program? -->
                                 <label for="facultyId">Select Head of Program:</label>
                                 <select class="form-control" id="facultyId" th:field="*{headOfProgramId}"
                                         required>
@@ -186,7 +187,7 @@
                                             th:text="${department.departmentName}"></option>
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-info">Create Program</button>
+                            <button type="submit" class="btn btn-info">Create Course</button>
                         </form>
                     </div>
                 </div>
@@ -197,7 +198,7 @@
                         <h4 class="card-title text-center mb-4">Section Form</h4>
                         <form class="form" th:action="@{/processSectionForm}" th:object="${Sections}" method="post">
                             <div class="form-group">
-                                <label for="departmentCode">Select Course:</label>
+                                <label for="courseId">Select Course:</label>
                                 <select class="form-control" id="courseId" th:field="*{courseId}"
                                         required>
                                     <option th:each="course : ${courses}"
@@ -214,7 +215,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="departmentCode">Select Faculty:</label>
+                                <label for="facultyId">Select Faculty:</label>
                                 <select class="form-control" id="facultyId" th:field="*{facultyId}"
                                         required>
                                     <option th:each="faculty: ${faculties}"
@@ -251,7 +252,7 @@
                                        required>
                             </div>
                             <div class="form-group">
-                                <label for="departmentCode">Select Program:</label>
+                                <label for="programId">Select Program:</label>
                                 <select class="form-control" id="programId" th:field="*{programId}"
                                         required>
                                     <option th:each="program : ${programs}"
@@ -291,6 +292,126 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-4 mx-auto">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h4 class="card-title text-center mb-4">Program-Course Pairing Form</h4>
+                        <form class="form" th:action="@{/processProgramCoursesForm}" th:object="${ProgramCourses}" method="post">
+                            <div class="form-group">
+                                <label for="programId">Select Program:</label>
+                                <select class="form-control" id="programId" th:field="*{programId}"
+                                        required>
+                                    <option th:each="program : ${programs}"
+                                            th:value="${program.programId}"
+                                            th:text="${program.programName}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="courseId">Select Course:</label>
+                                <select class="form-control" id="courseId" th:field="*{courseId}"
+                                        required>
+                                    <option th:each="course : ${courses}"
+                                            th:value="${course.courseId}"
+                                            th:text="${course.courseTitle}"></option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-info">Create Pairing</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mx-auto">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h4 class="card-title text-center mb-4">Subobjective Assignment Form</h4>
+                        <form class="form" th:action="@{/processProgramObjectivesForm}" th:object="${ProgramObjectives}" method="post">
+                            <div class="form-group">
+                                <!-- TODO: Should only be programs that have a program-course pairing -->
+                                <label for="programId">Select Program:</label>
+                                <select class="form-control" id="programId" th:field="*{programId}"
+                                        required>
+                                    <option th:each="program : ${programs}"
+                                            th:value="${program.programId}"
+                                            th:text="${program.programName}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <!-- TODO: Should only be courses associated with the above program -->
+                                <label for="courseId">Select Course:</label>
+                                <select class="form-control" id="courseId" th:field="*{courseId}"
+                                        required>
+                                    <!-- TODO: Should use course name instead of ID -->
+                                    <option th:each="programCourse : ${programCourses}"
+                                            th:value="${programCourse.courseId}"
+                                            th:text="${programCourse.courseId}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="objectiveCode">Select Objective Code:</label>
+                                <select class="form-control" id="objectiveCodeSpec" th:field="*{objectiveCode}"
+                                        required>
+                                    <option th:each="objective : ${learningObjectives}"
+                                            th:value="${objective.objectiveCode}"
+                                            th:text="${objective.objectiveCode}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <!-- TODO: Should only be subobjectives associated with the above objective -->
+                                <label for="subObjectiveCode">Select Subobjective Code:</label>
+                                <select class="form-control" id="subObjectiveCode" th:field="*{subObjectiveCode}"
+                                        required>
+                                    <option th:each="subObjective : ${subObjectives}"
+                                            th:value="${subObjective.subObjectiveCode}"
+                                            th:text="${subObjective.subObjectiveCode}"></option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-info">Assign Objective</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mx-auto">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h4 class="card-title text-center mb-4">Evaluation Results Form</h4>
+                        <form class="form" th:action="@{/processEvaluationForm}" th:object="${EvaluationResults}" method="post">
+                            <div class="form-group">
+                                <label for="programId">Select Section:</label>
+                                <select class="form-control" id="sectionNumber" th:field="*{sectionNumber}"
+                                        required>
+                                    <option th:each="section : ${sections}"
+                                            th:value="${section.sectionNumber}"
+                                            th:text="${section.sectionNumber}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="courseId">Select Subobjective:</label>
+                                <select class="form-control" id="subObjectiveCode" th:field="*{subObjectiveCode}"
+                                        required>
+                                    <option th:each="subObjective : ${subObjectives}"
+                                            th:value="${subObjective.subObjectiveCode}"
+                                            th:text="${subObjective.subObjectiveCode}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="evaluationMethod">Evaluation Method:</label>
+                                <textarea class="form-control" id="evaluationMethod"
+                                          th:field="*{evaluationMethod}" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <!-- Needs to make sure it does not exceed section.enrolledStudents -->
+                                <label for="studentsMet">Number of Students Meeting Subobjective:</label>
+                                <input type="text" class="form-control" id="studentsMet" th:field="*{studentsMet}"
+                                       pattern="^[0-9]+$" title="Please enter a positive number" required>
+                                <small class="form-text text-muted">Please enter a positive number.</small>
+                            </div>
+                            <button type="submit" class="btn btn-info">Submit Evaluation</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -303,6 +424,7 @@
         </div>
     </div>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
