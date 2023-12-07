@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <title>University System</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department Page</title>
     <link th:href="@{style.css}" rel="stylesheet"/>
-</head>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
+</head>
 <body>
-<!-- Sidebar -->
 <nav id="sidebar">
     <h3>University System</h3>
     <ul class="list-unstyled components">
@@ -24,68 +25,73 @@
         <!-- Add more sidebar items as needed -->
     </ul>
 </nav>
-<!-- Main content -->
-<div id="content">
-    <h2>Department Details</h2>
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Department Details For <span th:if="${departmentMessage}"
+                                                                th:text="${departmentMessage}"></span></h2>
+            <form th:action="@{/displayDepartmentDetails}" method="post" class="mb-4">
+                <div class="form-group">
+                    <label for="departmentSelector">Select Department:</label>
+                    <select id="departmentSelector" name="departmentCode" class="form-control">
+                        <option value="">-- Select --</option>
+                        <!-- Populate department options dynamically from your model -->
+                        <option th:each="department : ${departments}" th:value="${department.getDepartmentCode()}"
+                                th:text="${department.getDepartmentName()}">
+                        </option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Display Department Details</button>
+            </form>
 
-    <!-- Program selection dropdown -->
-    <form>
-        <label for="programSelector">Select Program:</label>
-        <select id="programSelector" onchange="loadDepartmentDetails()">
-            <option value="">-- Select --</option>
-            <!-- Populate program options dynamically from your model -->
-            <option th:each="program : ${programs}" th:value="${program.programId}"
-                    th:text="${program.programName}"></option>
-        </select>
-    </form>
+            <div>
+                <h3>Programs in the Department:</h3>
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>Program Id</th>
+                        <th>Program Name</th>
+                    </tr>
+                    </thead>
+                    <tbody th:each="program : ${programDetails}">
+                    <tr>
+                        <td th:text="${program.programId}"></td>
+                        <td th:text="${program.programName}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
-    <!-- Display department details based on the selected program -->
-    <div id="departmentDetailsContainer">
-        <h3>Programs in the Department:</h3>
-        <ul th:each="program : ${departmentDetails.programs}">
-            <li th:text="${program.programName}"></li>
-        </ul>
-
-        <h3>Faculty in the Department:</h3>
-        <table border="1">
-            <thead>
-            <tr>
-                <th>Faculty Name</th>
-                <th>Program In Charge</th>
-            </tr>
-            </thead>
-            <tbody th:each="faculty : ${departmentDetails.faculty}">
-            <tr>
-                <td th:text="${faculty.facultyName}"></td>
-                <td th:text="${faculty.programInCharge}"></td>
-            </tr>
-            </tbody>
-        </table>
+            <div class="mt-5">
+                <h3>Faculty in the Department:</h3>
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>Faculty Name</th>
+                        <th>Faculty Email</th>
+                        <th>Faculty Rank</th>
+                        <th>Program In Charge</th>
+                    </tr>
+                    </thead>
+                    <tbody th:each="faculty : ${faculties}">
+                    <tr>
+                        <td th:text="${faculty.facultyName}"></td>
+                        <td th:text="${faculty.facultyEmail}"></td>
+                        <td th:text="${faculty.facultyRank}"></td>
+                        <td th:text="${faculty.programInCharge}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
+
 </div>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
-
-<script th:inline="javascript">
-    /* Function to load department details dynamically based on the selected program */
-    function loadDepartmentDetails() {
-        var selectedProgram = $("#programSelector").val();
-
-        if (selectedProgram !== "") {
-            $.get('/displayDetails?programId=' + selectedProgram, function (data) {
-                $("#departmentDetailsContainer").html(data);
-            });
-        }
-    }
-</script>
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 </body>
 </html>
