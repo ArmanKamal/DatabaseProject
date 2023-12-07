@@ -55,71 +55,6 @@
             <div class="col-md-4 mx-auto">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h4 class="card-title text-center mb-4">Person Form</h4>
-                        <form class="form" th:action="@{/processPersonForm}" th:object="${Persons}" method="post">
-                            <div class="form-group">
-                                <label for="programName">Enter University Id:</label>
-                                <input type="text" class="form-control" placeholder="Enter University Id"
-                                       id="universityId"
-                                       th:field="*{universityId}"
-                                       required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="programName">Enter Person Name:</label>
-                                <input type="text" class="form-control" placeholder="Enter Person Name"
-                                       id="personName"
-                                       th:field="*{personName}" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="programName">Enter Person Email:</label>
-                                <input type="text" class="form-control" placeholder="Enter Person Email" id="email"
-                                       th:field="*{email}" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Create Person</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mx-auto">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h4 class="card-title text-center mb-4">Program Form</h4>
-                        <form class="form" th:action="@{/processProgramForm}" th:object="${Programs}" method="post">
-                            <div class="form-group">
-                                <label for="programName">Program Name:</label>
-                                <input type="text" class="form-control" id="programName" th:field="*{programName}"
-                                       required>
-                            </div>
-                            <div class="form-group">
-                                <label for="departmentCode">Select Department:</label>
-                                <select class="form-control" id="departmentCode" th:field="*{departmentCode}"
-                                        required>
-                                    <option th:each="department : ${departments}"
-                                            th:value="${department.departmentCode}"
-                                            th:text="${department.departmentName}"></option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="headOfProgram">Select Head of Program:</label>
-                                <select class="form-control" id="headOfProgram" th:field="*{headOfProgramId}"
-                                        required>
-                                    <option th:each="person : ${persons}" th:value="${person.universityId}"
-                                            th:text="${person.personName}"></option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-info">Create Program</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row mt-5">
-            <div class="col-md-4 mx-auto">
-                <div class="card h-100">
-                    <div class="card-body">
                         <h4 class="card-title text-center mb-4">Faculty Members Form</h4>
                         <form class="form" th:action="@{/processFacultyForm}" th:object="${FacultyMembers}"
                               method="post">
@@ -155,6 +90,72 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-4 mx-auto">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h4 class="card-title text-center mb-4">Program Form</h4>
+                        <form class="form" th:action="@{/processProgramForm}" th:object="${Programs}" method="post">
+                            <div class="form-group">
+                                <label for="programName">Program Name:</label>
+                                <input type="text" class="form-control" id="programName" th:field="*{programName}"
+                                       required>
+                            </div>
+                            <div class="form-group">
+                                <label for="departmentCode">Select Department:</label>
+                                <select class="form-control" id="departmentCode" th:field="*{departmentCode}"
+                                        required>
+                                    <option th:each="department : ${departments}"
+                                            th:value="${department.departmentCode}"
+                                            th:text="${department.departmentName}"></option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="facultyId">Select Head of Program:</label>
+                                <select class="form-control" id="facultyId" th:field="*{headOfProgramId}"
+                                        required>
+                                    <option th:each="faculty: ${faculties}"
+                                            th:value="${faculty.facultyId}"
+                                            th:text="${faculty.facultyName}"></option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-info">Create Program</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--            <div class="col-md-4 mx-auto">-->
+        <!--                <div class="card h-100">-->
+        <!--                    <div class="card-body">-->
+        <!--                        <h4 class="card-title text-center mb-4">Person Form</h4>-->
+        <!--                        <form class="form" th:action="@{/processPersonForm}" th:object="${Persons}" method="post">-->
+        <!--                            <div class="form-group">-->
+        <!--                                <label for="programName">Enter University Id:</label>-->
+        <!--                                <input type="text" class="form-control" placeholder="Enter University Id"-->
+        <!--                                       id="universityId"-->
+        <!--                                       th:field="*{universityId}"-->
+        <!--                                       required>-->
+        <!--                            </div>-->
+
+        <!--                            <div class="form-group">-->
+        <!--                                <label for="programName">Enter Person Name:</label>-->
+        <!--                                <input type="text" class="form-control" placeholder="Enter Person Name"-->
+        <!--                                       id="personName"-->
+        <!--                                       th:field="*{personName}" required>-->
+        <!--                            </div>-->
+
+        <!--                            <div class="form-group">-->
+        <!--                                <label for="programName">Enter Person Email:</label>-->
+        <!--                                <input type="text" class="form-control" placeholder="Enter Person Email" id="email"-->
+        <!--                                       th:field="*{email}" required>-->
+        <!--                            </div>-->
+        <!--                            <button type="submit" class="btn btn-primary">Create Person</button>-->
+        <!--                        </form>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <div class="row">
             <div class="col-md-4 mx-auto">
                 <div class="card h-100">
                     <div class="card-body">
@@ -238,9 +239,6 @@
                     </div>
                 </div>
             </div>
-
-        </div>
-        <div class="row mt-5">
             <div class="col-md-4 mx-auto">
                 <div class="card h-100">
                     <div class="card-body">
@@ -266,6 +264,8 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="row">
             <div class="col-md-4 mx-auto">
                 <div class="card h-100">
                     <div class="card-body">
@@ -292,16 +292,16 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div th:if="${successMessage}" class="alert alert-success toaster" role="alert">
-                <p th:text="${successMessage}"></p>
-            </div>
-            <div th:if="${failureMessage}" class="alert alert-danger toaster" role="alert">
-                <p th:text="${failureMessage}"></p>
-            </div>
+
+    </div>
+    <div class="row">
+        <div th:if="${successMessage}" class="alert alert-success toaster" role="alert">
+            <p th:text="${successMessage}"></p>
+        </div>
+        <div th:if="${failureMessage}" class="alert alert-danger toaster" role="alert">
+            <p th:text="${failureMessage}"></p>
         </div>
     </div>
-</div>
 </div>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

@@ -1,27 +1,16 @@
--- Table for Persons
-CREATE TABLE IF NOT EXISTS Persons
-(
-    university_id VARCHAR(20) PRIMARY KEY,
-    person_name   VARCHAR(255)        NOT NULL,
-    email         VARCHAR(255) UNIQUE NOT NULL
-);
+# -- Table for Persons
+# CREATE TABLE IF NOT EXISTS Persons
+# (
+#     university_id VARCHAR(20) PRIMARY KEY,
+#     person_name   VARCHAR(255)        NOT NULL,
+#     email         VARCHAR(255) UNIQUE NOT NULL
+# );
 
 -- Table for Departments
 CREATE TABLE IF NOT EXISTS Departments
 (
     department_code CHAR(4) PRIMARY KEY,
     department_name VARCHAR(255) UNIQUE NOT NULL
-);
-
--- Table for Programs
-CREATE TABLE IF NOT EXISTS Programs
-(
-    program_id         INT PRIMARY KEY AUTO_INCREMENT,
-    program_name       VARCHAR(255) UNIQUE NOT NULL,
-    department_code    CHAR(4)             NOT NULL,
-    head_of_program_id VARCHAR(20) UNIQUE  NOT NULL,
-    FOREIGN KEY (department_code) REFERENCES Departments (department_code),
-    FOREIGN KEY (head_of_program_id) REFERENCES Persons (university_id)
 );
 
 -- Table for FacultyMembers
@@ -34,6 +23,18 @@ CREATE TABLE IF NOT EXISTS FacultyMembers
     department_code CHAR(4),
     FOREIGN KEY (department_code) REFERENCES Departments (department_code)
 );
+
+-- Table for Programs
+CREATE TABLE IF NOT EXISTS Programs
+(
+    program_id         INT PRIMARY KEY AUTO_INCREMENT,
+    program_name       VARCHAR(255) UNIQUE NOT NULL,
+    department_code    CHAR(4)             NOT NULL,
+    head_of_program_id INT UNIQUE          NOT NULL,
+    FOREIGN KEY (department_code) REFERENCES Departments (department_code),
+    FOREIGN KEY (head_of_program_id) REFERENCES FacultyMembers (faculty_id)
+);
+
 
 -- Table for Courses
 CREATE TABLE IF NOT EXISTS Courses

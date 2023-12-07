@@ -33,7 +33,6 @@ public class MainController {
                                  @ModelAttribute("SubObjectives") SubObjectives subObjectives) {
         ModelAndView mav = new ModelAndView("index");
         mav.addObject("departments", getDepartments());
-        mav.addObject("persons", getPersons());
         mav.addObject("courses", getCourses());
         mav.addObject("faculties", getFacultyMembers());
         mav.addObject("programs", getPrograms());

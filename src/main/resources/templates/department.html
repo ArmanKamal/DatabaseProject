@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>University System</title>
+    <link th:href="@{style.css}" rel="stylesheet"/>
+</head>
+
+<body>
+<!-- Sidebar -->
+<nav id="sidebar">
+    <h3>University System</h3>
+    <ul class="list-unstyled components">
+        <li class="active">
+            <a href="/">Home</a>
+        </li>
+        <li>
+            <a href="/departments">Departments</a>
+        </li>
+        <li>
+            <a href="/courses">Courses</a>
+        </li>
+        <!-- Add more sidebar items as needed -->
+    </ul>
+</nav>
+<!-- Main content -->
+<div id="content">
+    <h2>Department Details</h2>
+
+    <!-- Program selection dropdown -->
+    <form>
+        <label for="programSelector">Select Program:</label>
+        <select id="programSelector" onchange="loadDepartmentDetails()">
+            <option value="">-- Select --</option>
+            <!-- Populate program options dynamically from your model -->
+            <option th:each="program : ${programs}" th:value="${program.programId}"
+                    th:text="${program.programName}"></option>
+        </select>
+    </form>
+
+    <!-- Display department details based on the selected program -->
+    <div id="departmentDetailsContainer">
+        <h3>Programs in the Department:</h3>
+        <ul th:each="program : ${departmentDetails.programs}">
+            <li th:text="${program.programName}"></li>
+        </ul>
+
+        <h3>Faculty in the Department:</h3>
+        <table border="1">
+            <thead>
+            <tr>
+                <th>Faculty Name</th>
+                <th>Program In Charge</th>
+            </tr>
+            </thead>
+            <tbody th:each="faculty : ${departmentDetails.faculty}">
+            <tr>
+                <td th:text="${faculty.facultyName}"></td>
+                <td th:text="${faculty.programInCharge}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+<script th:inline="javascript">
+    /* Function to load department details dynamically based on the selected program */
+    function loadDepartmentDetails() {
+        var selectedProgram = $("#programSelector").val();
+
+        if (selectedProgram !== "") {
+            $.get('/displayDetails?programId=' + selectedProgram, function (data) {
+                $("#departmentDetailsContainer").html(data);
+            });
+        }
+    }
+</script>
+
+</body>
+</html>
