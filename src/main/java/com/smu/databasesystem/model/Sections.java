@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Persons {
-    private String universityId;
-    private String personName;
-
-    private String email;
+public class Sections {
+    private Long sectionNumber;
+    private String courseId;
+    private Semester semester;
+    private String facultyId;
+    private String enrolledStudents;
 }

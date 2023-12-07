@@ -9,28 +9,28 @@ CREATE TABLE IF NOT EXISTS Persons
 -- Table for Departments
 CREATE TABLE IF NOT EXISTS Departments
 (
-    department_code       CHAR(4) PRIMARY KEY,
-    department_name       VARCHAR(255) UNIQUE NOT NULL
+    department_code CHAR(4) PRIMARY KEY,
+    department_name VARCHAR(255) UNIQUE NOT NULL
 );
 
 -- Table for Programs
 CREATE TABLE IF NOT EXISTS Programs
 (
-    program_id INT PRIMARY KEY AUTO_INCREMENT,
+    program_id         INT PRIMARY KEY AUTO_INCREMENT,
     program_name       VARCHAR(255) UNIQUE NOT NULL,
-    department_code    CHAR(4) NOT NULL,
-    head_of_program_id  VARCHAR(20) UNIQUE NOT NULL,
+    department_code    CHAR(4)             NOT NULL,
+    head_of_program_id VARCHAR(20) UNIQUE  NOT NULL,
     FOREIGN KEY (department_code) REFERENCES Departments (department_code),
-    FOREIGN KEY (head_of_program_id)  REFERENCES Persons (university_id)
+    FOREIGN KEY (head_of_program_id) REFERENCES Persons (university_id)
 );
 
 -- Table for FacultyMembers
 CREATE TABLE IF NOT EXISTS FacultyMembers
 (
-    faculty_id      INT PRIMARY KEY,
-    faculty_name    VARCHAR(255) NOT NULL,
-    email_address   VARCHAR(255) NOT NULL,
-    faculty_rank  ENUM('full', 'associate', 'assistant', 'adjunct') NOT NULL,
+    faculty_id      INT PRIMARY KEY AUTO_INCREMENT,
+    faculty_name    VARCHAR(255)                                       NOT NULL,
+    email_address   VARCHAR(255) UNIQUE                                NOT NULL,
+    faculty_rank    ENUM ('full', 'associate', 'assistant', 'adjunct') NOT NULL,
     department_code CHAR(4),
     FOREIGN KEY (department_code) REFERENCES Departments (department_code)
 );
@@ -48,12 +48,11 @@ CREATE TABLE IF NOT EXISTS Courses
 -- Table for Sections/
 CREATE TABLE IF NOT EXISTS Sections
 (
-    offering_id       INT PRIMARY KEY,
-    course_id         CHAR(8)    NOT NULL,
-    semester          ENUM('Fall','Spring','Summer') NOT NULL,
-    section_number    INT UNIQUE NOT NULL,
-    faculty_id        INT        NOT NULL,
-    enrolled_students INT        NOT NULL,
+    section_number    INT(3) ZEROFILL AUTO_INCREMENT PRIMARY KEY,
+    course_id         CHAR(8)                         NOT NULL,
+    semester          ENUM ('Fall','Spring','Summer') NOT NULL,
+    faculty_id        INT                             NOT NULL,
+    enrolled_students INT                             NOT NULL,
     FOREIGN KEY (course_id) REFERENCES Courses (course_id),
     FOREIGN KEY (faculty_id) REFERENCES FacultyMembers (faculty_id)
 );
@@ -101,10 +100,10 @@ CREATE TABLE IF NOT EXISTS ProgramObjectives
 -- Table for EvaluationResults
 CREATE TABLE IF NOT EXISTS EvaluationResults
 (
-    offering_id        INT PRIMARY KEY,
+    section_number     INT(3) ZEROFILL AUTO_INCREMENT PRIMARY KEY,
     sub_objective_code INT,
     evaluation_method  VARCHAR(50) NOT NULL,
     students_met       INT         NOT NULL,
     FOREIGN KEY (sub_objective_code) REFERENCES SubObjectives (sub_objective_code),
-    FOREIGN KEY (offering_id) REFERENCES Sections (offering_id)
+    FOREIGN KEY (section_number) REFERENCES Sections (section_number)
 );

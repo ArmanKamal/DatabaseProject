@@ -2,113 +2,254 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <!-- Add Bootstrap CSS link -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <title>University System</title>
+    <link th:href="@{style.css}" rel="stylesheet"/>
 </head>
 
 <body>
-<div class="container mt-5">
-    <div class="text-center mb-4">
-        <h2>University System By Arman Kamal</h2>
-    </div>
+<!-- Sidebar -->
+<nav id="sidebar">
+    <h3>University System</h3>
+    <ul class="list-unstyled components">
+        <li class="active">
+            <a href="/">Home</a>
+        </li>
+        <li>
+            <a href="/departments">Departments</a>
+        </li>
+        <li>
+            <a href="/courses">Courses</a>
+        </li>
+        <!-- Add more sidebar items as needed -->
+    </ul>
+</nav>
+<!-- Main content -->
+<div id="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center mb-4">Department Form</h4>
+                        <form class="form" th:action="@{/processDepartmentForm}" th:object="${Departments}"
+                              method="post">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="departmentCode"
+                                       placeholder="Enter Department Code" th:field="*{departmentCode}"
+                                       required>
+                            </div>
 
-    <div class="row">
-        <div class="col-md-3mx-auto">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title text-center mb-4">Department Form</h4>
-                    <form class="form" th:action="@{/processDepartmentForm}" th:object="${Departments}" method="post">
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="departmentCode"
-                                   placeholder="Enter Department Code" th:field="*{department_code}"
-                                   required>
-                        </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="departmentName"
+                                       placeholder="Enter Department Name" th:field="*{departmentName}"
+                                       required>
+                            </div>
 
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="departmentName"
-                                   placeholder="Enter Department Name" th:field="*{department_name}"
-                                   required>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">Create Department</button>
-                    </form>
+                            <button type="submit" class="btn btn-primary">Create Department</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3 mx-auto">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title text-center mb-4">Person Form</h4>
-                    <form class="form" th:action="@{/processPersonForm}" th:object="${Persons}" method="post">
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Enter University Id" id="universityId"
-                                   th:field="*{university_id}"
-                                   required>
-                        </div>
+            <div class="col-md-4 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center mb-4">Person Form</h4>
+                        <form class="form" th:action="@{/processPersonForm}" th:object="${Persons}" method="post">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Enter University Id"
+                                       id="universityId"
+                                       th:field="*{universityId}"
+                                       required>
+                            </div>
 
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Enter Person Name" id="personName"
-                                   th:field="*{person_name}" required>
-                        </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Enter Person Name"
+                                       id="personName"
+                                       th:field="*{personName}" required>
+                            </div>
 
-                        <div class="form-group">
-                            <label for="email">Email:</label>
-                            <input type="text" class="form-control" placeholder="Enter Person Email" id="email"
-                                   th:field="*{email}" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Create Person</button>
-                    </form>
+                            <div class="form-group">
+                                <label for="email">Email:</label>
+                                <input type="text" class="form-control" placeholder="Enter Person Email" id="email"
+                                       th:field="*{email}" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Create Person</button>
+                        </form>
+                    </div>
                 </div>
             </div>
+            <div class="col-md-4 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center mb-4">Program Form</h4>
+                        <form class="form" th:action="@{/processProgramForm}" th:object="${Programs}" method="post">
+                            <div class="form-group">
+                                <label for="programName">Program Name:</label>
+                                <input type="text" class="form-control" id="programName" th:field="*{programName}"
+                                       required>
+                            </div>
+                            <div class="form-group">
+                                <label for="departmentCode">Select Department:</label>
+                                <select class="form-control" id="departmentCode" th:field="*{departmentCode}"
+                                        required>
+                                    <option th:each="department : ${departments}"
+                                            th:value="${department.departmentCode}"
+                                            th:text="${department.departmentName}"></option>
+                                </select>
+                            </div>
 
-        </div>
-        <div class="col-md-3 mx-auto">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title text-center mb-4">Program Form</h4>
-                    <form class="form" th:action="@{/processProgramForm}" th:object="${Programs}" method="post">
-                        <div class="form-group">
-                            <label for="programName">Program Name:</label>
-                            <input type="text" class="form-control" id="programName" th:field="*{programName}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="departmentCode">Select Department:</label>
-                            <select class="form-control" id="departmentCode" th:field="*{departmentCode}" required>
-                                <option th:each="department : ${departments}" th:value="${department.department_code}"
-                                        th:text="${department.department_name}"></option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="headOfProgram">Select Head of Program:</label>
-                            <select class="form-control" id="headOfProgram" th:field="*{headOfProgramId}" required>
-                                <option th:each="person : ${persons}" th:value="${person.university_id}"
-                                        th:text="${person.person_name}"></option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-info">Create Program</button>
-                    </form>
+                            <div class="form-group">
+                                <label for="headOfProgram">Select Head of Program:</label>
+                                <select class="form-control" id="headOfProgram" th:field="*{headOfProgramId}"
+                                        required>
+                                    <option th:each="person : ${persons}" th:value="${person.universityId}"
+                                            th:text="${person.personName}"></option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-info">Create Program</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div th:if="${successMessage}" class="alert alert-success">
+            <div class="col-md-4 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center mb-4">Faculty Members Form</h4>
+                        <form class="form" th:action="@{/processFacultyForm}" th:object="${FacultyMembers}"
+                              method="post">
+                            <div class="form-group">
+                                <label for="facultyName">Faculty Name:</label>
+                                <input type="text" class="form-control" id="facultyName" th:field="*{facultyName}"
+                                       required>
+                            </div>
+                            <div class="form-group">
+                                <label for="emailAddress">Email:</label>
+                                <input type="text" class="form-control" id="emailAddress" th:field="*{emailAddress}"
+                                       required>
+                            </div>
+                            <div class="form-group">
+                                <label for="facultyRank">Faculty Rank:</label>
+                                <select class="form-control" id="facultyRank" th:field="*{facultyRank}" required>
+                                    <option th:each="rank : ${T( com.smu.databasesystem.model.FacultyRank).values()}"
+                                            th:value="${rank}"
+                                            th:text="${#strings.capitalize(rank.name())}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="departmentCode">Select Department:</label>
+                                <select class="form-control" id="departmentCode" th:field="*{departmentCode}"
+                                        required>
+                                    <option th:each="department : ${departments}"
+                                            th:value="${department.departmentCode}"
+                                            th:text="${department.departmentName}"></option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-info">Create Program</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center mb-4">Course Form</h4>
+                        <form class="form" th:action="@{/processCourseForm}" th:object="${Courses}" method="post">
+                            <div class="form-group">
+                                <label for="courseId">Course ID:</label>
+                                <input type="text" class="form-control" id="courseId" th:field="*{courseId}"
+                                       pattern="[0-9]{4}" title="Please enter a 4-digit number" required>
+                                <small class="form-text text-muted">Please enter a 4-digit number.</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="courseTitle">Course Title:</label>
+                                <input type="text" class="form-control" id="courseTitle" th:field="*{courseTitle}"
+                                       required>
+                            </div>
+                            <div class="form-group">
+                                <label for="courseDescription">CourseDescriptiopn:</label>
+                                <textarea class="form-control" id="courseDescription"
+                                          th:field="*{courseDescription}" required/>
+                            </div>
+                            <div class="form-group">
+                                <label for="departmentCode">Select Department:</label>
+                                <select class="form-control" id="departmentCode" th:field="*{departmentCode}"
+                                        required>
+                                    <option th:each="department : ${departments}"
+                                            th:value="${department.departmentCode}"
+                                            th:text="${department.departmentName}"></option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-info">Create Program</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center mb-4">Section Form</h4>
+                        <form class="form" th:action="@{/processSectionForm}" th:object="${Sections}" method="post">
+                            <div class="form-group">
+                                <label for="departmentCode">Select Course:</label>
+                                <select class="form-control" id="courseId" th:field="*{courseId}"
+                                        required>
+                                    <option th:each="course : ${courses}"
+                                            th:value="${course.courseId}"
+                                            th:text="${course.courseTitle}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="semester">Semester:</label>
+                                <select class="form-control" id="semester" th:field="*{semester}" required>
+                                    <option th:each="semester : ${T( com.smu.databasesystem.model.Semester).values()}"
+                                            th:value="${semester}"
+                                            th:text="${#strings.capitalize(semester.name())}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="departmentCode">Select Faculty:</label>
+                                <select class="form-control" id="facultyId" th:field="*{facultyId}"
+                                        required>
+                                    <option th:each="faculty: ${faculties}"
+                                            th:value="${faculty.facultyId}"
+                                            th:text="${faculty.facultyName}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="enrolledStudents">Enrolled Students: </label>
+                                <input type="text" class="form-control" id="enrolledStudents" th:field="*{enrolledStudents}"
+                                       required>
+                            </div>
+                            <button type="submit" class="btn btn-info">Create Program</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div th:if="${successMessage}" class="alert alert-success toaster" role="alert">
                 <p th:text="${successMessage}"></p>
             </div>
-            <div th:if="${failureMessage}" class="alert alert-danger">
+            <div th:if="${failureMessage}" class="alert alert-danger toaster" role="alert">
                 <p th:text="${failureMessage}"></p>
             </div>
         </div>
-
     </div>
 </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 
-<!-- Add Bootstrap JS and Popper.js for Bootstrap functionality -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
-
 </html>
-

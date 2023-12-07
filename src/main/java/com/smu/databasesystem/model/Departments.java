@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class Departments {
-    private String department_code;
-    private String department_name;
+    private String departmentCode;
+    private String departmentName;
 }
