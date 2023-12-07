@@ -53,6 +53,7 @@ CREATE TABLE IF NOT EXISTS Sections
     semester          ENUM ('Fall','Spring','Summer') NOT NULL,
     faculty_id        INT                             NOT NULL,
     enrolled_students INT                             NOT NULL,
+    year              INT                             NOT NULL,
     FOREIGN KEY (course_id) REFERENCES Courses (course_id),
     FOREIGN KEY (faculty_id) REFERENCES FacultyMembers (faculty_id)
 );
@@ -61,7 +62,7 @@ CREATE TABLE IF NOT EXISTS Sections
 CREATE TABLE IF NOT EXISTS LearningObjectives
 (
     objective_code VARCHAR(20) PRIMARY KEY,
-    program_id     INT  ,
+    program_id     INT,
     FOREIGN KEY (program_id) REFERENCES Programs (program_id)
 
 );

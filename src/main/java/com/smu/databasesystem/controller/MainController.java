@@ -127,8 +127,8 @@ public class MainController {
     @PostMapping("/processSectionForm")
     public String processSectionForm(@ModelAttribute("Sections") Sections section, RedirectAttributes redirectAttributes) {
         try {
-            jdbcTemplate.update("INSERT INTO Sections (course_id, semester, faculty_id, enrolled_students) VALUES (?, ?, ?, ?)",
-                    section.getCourseId(), section.getSemester().name(), section.getFacultyId(), section.getEnrolledStudents());
+            jdbcTemplate.update("INSERT INTO Sections (course_id, semester, faculty_id, enrolled_students, year) VALUES (?, ?, ?, ?,?)",
+                    section.getCourseId(), section.getSemester().name(), section.getFacultyId(), section.getEnrolledStudents(), section.getYear());
 
             String successMessage = "Section created successfully for course ID: " + section.getCourseId() +
                     ", Semester: " + section.getSemester() + ", Section Number: " + section.getSectionNumber();

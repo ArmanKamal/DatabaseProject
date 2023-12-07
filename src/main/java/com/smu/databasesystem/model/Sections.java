@@ -15,4 +15,6 @@ public class Sections {
     private Semester semester;
     private String facultyId;
     private String enrolledStudents;
+
+    private String year;
 }

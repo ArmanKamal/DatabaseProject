@@ -227,7 +227,13 @@
                                        th:field="*{enrolledStudents}"
                                        required>
                             </div>
-                            <button type="submit" class="btn btn-info">Create Program</button>
+                            <div class="form-group">
+                                <label for="year">Year: </label>
+                                <input type="text" class="form-control" id="year"
+                                       th:field="*{year}"
+                                       required>
+                            </div>
+                            <button type="submit" class="btn btn-info">Create Sections</button>
                         </form>
                     </div>
                 </div>
