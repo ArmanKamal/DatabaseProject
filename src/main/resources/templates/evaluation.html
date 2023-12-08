@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department Page</title>
+    <link th:href="@{style.css}" rel="stylesheet"/>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+</head>
+<body>
+<nav id="sidebar">
+    <h3>University System</h3>
+    <ul class="list-unstyled components">
+        <li class="active">
+            <a href="/">Home</a>
+        </li>
+        <li>
+            <a href="/departments">Departments</a>
+        </li>
+        <li>
+            <a href="/programs">Programs</a>
+        </li>
+        <li>
+            <a href="/evaluations">Evaluations</a>
+        </li>
+        <!-- Add more sidebar items as needed -->
+    </ul>
+</nav>
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Program Details For <span th:if="${programMessage}"
+                                                             th:text="${programMessage}"></span></h2>
+            <form action="/evaluations" method="get">
+                <label for="semester">Select Semester:</label>
+                <select id="semester" name="semester">
+                    <option th:each="semester : ${distinctSemesters}" th:value="${semester}"
+                            th:text="${semester}"></option>
+                </select>
+
+                <label for="programId">Select Program:</label>
+                <select id="programId" name="programId">
+                    <option th:each="program : ${distinctPrograms}" th:value="${program.programId}"
+                            th:text="${program.programName}"></option>
+                </select>
+
+                <button type="submit" class="btn btn-primary mb-5">Get Evaluation Results</button>
+            </form>
+
+            <div>
+                <table border="1" class="table table-bordered">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>Section Number</th>
+                        <th>Sub Objective Code</th>
+                        <th>Evaluation Method</th>
+                        <th>Students Met</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="result : ${evaluationResultsList}">
+                        <td th:text="${result.sectionNumber}"></td>
+                        <td th:text="${result.subObjectiveCode}"></td>
+                        <td th:text="${result.evaluationMethod}"></td>
+                        <td th:text="${result.studentsMet}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</body>
+</html>

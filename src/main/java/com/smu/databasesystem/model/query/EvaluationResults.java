@@ -1,4 +1,4 @@
-package com.smu.databasesystem.model;
+package com.smu.databasesystem.model.query;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProgramObjectives {
-    private String programId;
-    private String programName;
-    private String courseId;
-    private String objectiveCode;
+public class EvaluationResults {
+    private Long sectionNumber;
     private String subObjectiveCode;
+    private String evaluationMethod;
+    private Long studentsMet;
 }

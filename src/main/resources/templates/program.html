@@ -31,57 +31,59 @@
 <div class="container mt-5">
     <div class="card">
         <div class="card-body">
-            <h2 class="card-title">Department Details For <span th:if="${departmentMessage}"
-                                                                th:text="${departmentMessage}"></span></h2>
-            <form th:action="@{/departments}" method="get" class="mb-4">
+            <h2 class="card-title">Program Details For <span th:if="${programMessage}"
+                                                             th:text="${programMessage}"></span></h2>
+            <form th:action="@{/programs}" method="get" class="mb-4">
                 <div class="form-group">
-                    <label for="departmentSelector">Select Department:</label>
-                    <select id="departmentSelector" name="departmentCode" class="form-control">
+                    <label for="programSelector">Select a Program:</label>
+                    <select id="programSelector" name="programId" class="form-control">
                         <option value="">-- Select --</option>
-                        <!-- Populate department options dynamically from your model -->
-                        <option th:each="department : ${departments}" th:value="${department.getDepartmentCode()}"
-                                th:text="${department.getDepartmentName()}">
+                        <!-- Populate courses options dynamically from your model -->
+                        <option th:each="program : ${programs}" th:value="${program.getProgramId()}"
+                                th:text="${program.getProgramName()}">
                         </option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary">Display Department Details</button>
+                <button type="submit" class="btn btn-primary">Display Program Details</button>
             </form>
 
             <div>
-                <h3>Programs in the Department:</h3>
-                <table class="table table-bordered">
+                <h3>Courses in the Program:</h3>
+                <table class="table table-bordered table-striped">
                     <thead class="thead-dark">
                     <tr>
-                        <th>Program Id</th>
-                        <th>Program Name</th>
+                        <th>Course Id</th>
+                        <th>Course Name</th>
+                        <th>Objective Code</th>
+                        <th>SubObjective Code</th>
+                        <th>Description</th>
                     </tr>
                     </thead>
-                    <tbody th:each="program : ${programDetails}">
+                    <tbody th:each="course : ${courses}">
                     <tr>
-                        <td th:text="${program.programId}"></td>
-                        <td th:text="${program.programName}"></td>
+                        <td th:text="${course.courseId}"></td>
+                        <td th:text="${course.courseTitle}"></td>
+                        <td th:text="${course.objectiveCode}"></td>
+                        <td th:text="${course.subObjectiveCode}"></td>
+                        <td th:text="${course.description}"></td>
                     </tr>
                     </tbody>
                 </table>
             </div>
 
             <div class="mt-5">
-                <h3>Faculty in the Department:</h3>
-                <table class="table table-bordered">
+                <h3>Objectives In the Program:</h3>
+                <table class="table table-bordered table-striped">
                     <thead class="thead-dark">
                     <tr>
-                        <th>Faculty Name</th>
-                        <th>Faculty Email</th>
-                        <th>Faculty Rank</th>
-                        <th>Program In Charge</th>
+                        <th>#</th>
+                        <th>Objective Code</th>
                     </tr>
                     </thead>
-                    <tbody th:each="faculty : ${faculties}">
+                    <tbody th:each="objective, stat : ${objectives}">
                     <tr>
-                        <td th:text="${faculty.facultyName}"></td>
-                        <td th:text="${faculty.facultyEmail}"></td>
-                        <td th:text="${faculty.facultyRank}"></td>
-                        <td th:text="${faculty.programInCharge}"></td>
+                        <td th:text="${stat.index + 1}"></td>
+                        <td th:text="${objective.objectiveCode}"></td>
                     </tr>
                     </tbody>
                 </table>

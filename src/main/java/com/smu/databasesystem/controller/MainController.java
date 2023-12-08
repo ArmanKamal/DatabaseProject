@@ -5,13 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class MainController {
@@ -46,6 +45,7 @@ public class MainController {
 
         return mav;
     }
+
 
     /* Create Department */
     @PostMapping("/processDepartmentForm")
@@ -205,6 +205,7 @@ public class MainController {
         return "redirect:/";
     }
 
+
     @PostMapping("/processEvaluationForm")
     public String processSectionForm(@ModelAttribute("EvaluationResults") EvaluationResults evaluationResults, RedirectAttributes redirectAttributes) {
         try {
@@ -303,6 +304,22 @@ public class MainController {
                 .courseId(resultSet.getString("course_id"))
                 .build());
     }
+
+//    private List<ProgramObjectives> getProgramObjectives() {
+//        String sql = "SELECT DISTINCT  pc.program_id, pc.course_id, po.objective_code, po.sub_objective_code, p.program_name" +
+//                " FROM ProgramCourses pc" +
+//                " LEFT JOIN ProgramObjectives po ON pc.program_id = po.program_id" +
+//                " LEFT JOIN Programs p ON pc.program_id = p.program_id" +
+//                " GROUP BY pc.program_id, po.course_id, po.objective_code, po.sub_objective_code, p.program_name;";
+//        return jdbcTemplate.query(sql, (resultSet, rowNum) -> ProgramObjectives.builder()
+//                .programId(resultSet.getString("program_id"))
+//                .courseId(resultSet.getString("course_id"))
+//                .objectiveCode(resultSet.getString("objective_code"))
+//                .subObjectiveCode(resultSet.getString("sub_objective_code"))
+//                .programName(resultSet.getString("program_name"))
+//                .build());
+//    }
+
 }
 
 
