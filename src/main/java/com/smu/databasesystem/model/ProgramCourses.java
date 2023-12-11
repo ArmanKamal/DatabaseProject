@@ -12,4 +12,9 @@ import lombok.NoArgsConstructor;
 public class ProgramCourses {
     private String programId;
     private String courseId;
+
+    private String programName;
+
+    private String courseName;
+
 }

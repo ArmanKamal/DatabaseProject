@@ -24,18 +24,18 @@ public class MainController {
 
     @GetMapping("/")
     public String showView(@ModelAttribute("Departments") Departments departments,
-                                 @ModelAttribute("Persons") Persons persons,
-                                 @ModelAttribute("Programs") Programs programs,
-                                 @ModelAttribute("FacultyMembers") FacultyMembers facultyMembers,
-                                 @ModelAttribute("Courses") Courses courses,
-                                 @ModelAttribute("Sections") Sections sections,
-                                 @ModelAttribute("LearningObjectives") LearningObjectives learningObjectives,
-                                 @ModelAttribute("SubObjectives") SubObjectives subObjectives,
-                                 @ModelAttribute("ProgramCourses") ProgramCourses programCourses,
-                                 @ModelAttribute("ProgramObjectives") ProgramObjectives programObjectives,
-                                 @ModelAttribute("EvaluationResults") EvaluationResults evaluationResults,
-                                 Model mav) {
-        mav.addAttribute("departments",getDepartments());
+                           @ModelAttribute("Persons") Persons persons,
+                           @ModelAttribute("Programs") Programs programs,
+                           @ModelAttribute("FacultyMembers") FacultyMembers facultyMembers,
+                           @ModelAttribute("Courses") Courses courses,
+                           @ModelAttribute("Sections") Sections sections,
+                           @ModelAttribute("LearningObjectives") LearningObjectives learningObjectives,
+                           @ModelAttribute("SubObjectives") SubObjectives subObjectives,
+                           @ModelAttribute("ProgramCourses") ProgramCourses programCourses,
+                           @ModelAttribute("ProgramObjectives") ProgramObjectives programObjectives,
+                           @ModelAttribute("EvaluationResults") EvaluationResults evaluationResults,
+                           Model mav) {
+        mav.addAttribute("departments", getDepartments());
         mav.addAttribute("departments", getDepartments());
         mav.addAttribute("courses", getCourses());
         mav.addAttribute("faculties", getFacultyMembers());
@@ -135,7 +135,7 @@ public class MainController {
     public String processSectionForm(@ModelAttribute("Sections") Sections section, RedirectAttributes redirectAttributes) {
         try {
             jdbcTemplate.update("INSERT INTO Sections (section_number, course_id, semester, faculty_id, enrolled_students, year) VALUES (?, ?, ?, ?,?, ?)",
-                   section.getSectionNumber(), section.getCourseId(), section.getSemester().name(), section.getFacultyId(), section.getEnrolledStudents(), section.getYear());
+                    section.getSectionNumber(), section.getCourseId(), section.getSemester().name(), section.getFacultyId(), section.getEnrolledStudents(), section.getYear());
 
             String successMessage = "Section created successfully for course ID: " + section.getCourseId() +
                     ", Semester: " + section.getSemester();
@@ -208,13 +208,30 @@ public class MainController {
     }
 
     @PostMapping("/processProgramObjectivesForm")
-    public String processSectionForm(@ModelAttribute("ProgramObjectives") ProgramObjectives programObjectives, RedirectAttributes redirectAttributes) {
+    public String processObjectiveForm(@ModelAttribute("ProgramObjectives") ProgramObjectives programObjectives, RedirectAttributes redirectAttributes) {
         try {
-            jdbcTemplate.update("INSERT INTO ProgramObjectives (program_id, course_id, objective_code, sub_objective_code) VALUES (?, ?, ?, ?)",
-                    programObjectives.getProgramId(), programObjectives.getCourseId(), programObjectives.getObjectiveCode(), programObjectives.getSubObjectiveCode());
+            String[] parts = programObjectives.getSubObjectiveCode().split(",");
+            String programmingSubObjective = parts[0];
+            String programmingObjective = parts[1];
 
-            String successMessage = "Subobjective " + programObjectives.getSubObjectiveCode() + " of Objective " + programObjectives.getObjectiveCode() + " successfully made for Program-Course pair " + programObjectives.getProgramId() + " and " + programObjectives.getCourseId();
-            redirectAttributes.addFlashAttribute("successMessage", successMessage);
+            int rowCount = jdbcTemplate.queryForObject(
+                    "SELECT COUNT(*) FROM SubObjectives so JOIN LearningObjectives lo ON so.objective_code=lo.objective_code WHERE lo.program_id = ? AND lo.objective_code= ?",
+                    Integer.class,
+                    programObjectives.getProgramId(),
+                    programmingObjective
+            );
+            System.out.println("Row count"+rowCount+"And Program id:"+programObjectives.getProgramId());
+            if (rowCount > 0) {
+                jdbcTemplate.update("INSERT INTO ProgramObjectives (program_id, course_id, sub_objective_code,objective_code) VALUES (?, ?, ?,?)",
+                        programObjectives.getProgramId(), programObjectives.getCourseId(),programmingSubObjective ,programmingObjective);
+
+                String successMessage = "Subobjective " + programObjectives.getSubObjectiveCode() + " of Objective " + programObjectives.getObjectiveCode() + " successfully made for Program-Course pair " + programObjectives.getProgramId() + " and " + programObjectives.getCourseId();
+                redirectAttributes.addFlashAttribute("successMessage", successMessage);
+
+            } else {
+                String failureMessage = "SubObjective doesnot belong to : "+programObjectives.getProgramId();
+                redirectAttributes.addFlashAttribute("failureMessage", failureMessage);
+            }
         } catch (Exception e) {
             String failure = "Failed because of " + e;
             redirectAttributes.addFlashAttribute("failureMessage", failure);
@@ -315,12 +332,15 @@ public class MainController {
     }
 
     private List<ProgramCourses> getProgramCourses() {
-        String sql = "SELECT * FROM ProgramCourses";
+        String sql = "SELECT pc.program_id,pc.course_id,c.course_title,p.program_name FROM ProgramCourses pc JOIN Courses c ON  pc.course_id=c.course_id JOIN Programs p ON pc.program_id=p.program_id";
         return jdbcTemplate.query(sql, (resultSet, rowNum) -> ProgramCourses.builder()
                 .programId(resultSet.getString("program_id"))
                 .courseId(resultSet.getString("course_id"))
+                .courseName(resultSet.getString("course_title"))
+                .programName(resultSet.getString("program_name"))
                 .build());
     }
+
 
 //    private List<ProgramObjectives> getProgramObjectives() {
 //        String sql = "SELECT DISTINCT  pc.program_id, pc.course_id, po.objective_code, po.sub_objective_code, p.program_name" +

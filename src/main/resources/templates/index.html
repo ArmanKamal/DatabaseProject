@@ -315,46 +315,35 @@
             <div class="col-md-4 mx-auto">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h4 class="card-title text-center mb-4">Subobjective Assignment Form</h4>
+                        <h4 class="card-title text-center mb-4">Assignment Form</h4>
                         <form class="form" th:action="@{/processProgramObjectivesForm}" th:object="${ProgramObjectives}" method="post">
                             <div class="form-group">
-                                <!-- TODO: Should only be programs that have a program-course pairing -->
                                 <label for="programId">Select Program:</label>
                                 <select class="form-control" id="programId" th:field="*{programId}"
                                         required>
-                                    <option th:each="program : ${programs}"
+                                    <option th:each="program : ${programCourses}"
                                             th:value="${program.programId}"
                                             th:text="${program.programName}"></option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <!-- TODO: Should only be courses associated with the above program -->
                                 <label for="courseId">Select Course:</label>
                                 <select class="form-control" id="courseId" th:field="*{courseId}"
                                         required>
-                                    <!-- TODO: Should use course name instead of ID -->
                                     <option th:each="programCourse : ${programCourses}"
                                             th:value="${programCourse.courseId}"
-                                            th:text="${programCourse.courseId}"></option>
+                                            th:text="${programCourse.courseName}"></option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="objectiveCode">Select Objective Code:</label>
-                                <select class="form-control" id="objectiveCodeSpec" th:field="*{objectiveCode}"
-                                        required>
-                                    <option th:each="objective : ${learningObjectives}"
-                                            th:value="${objective.objectiveCode}"
-                                            th:text="${objective.objectiveCode}"></option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <!-- TODO: Should only be subobjectives associated with the above objective -->
                                 <label for="subObjectiveCode">Select Subobjective Code:</label>
                                 <select class="form-control" id="subObjectiveCode" th:field="*{subObjectiveCode}"
                                         required>
                                     <option th:each="subObjective : ${subObjectives}"
-                                            th:value="${subObjective.subObjectiveCode}"
-                                            th:text="${subObjective.subObjectiveCode}"></option>
+                                            th:value="${subObjective.subObjectiveCode}+','+${subObjective.objectiveCode}"
+                                            th:text="'Objective: '+${subObjective.getObjectiveCode()}+' Sub-Objective: '
+                                            +${subObjective.subObjectiveCode}">
+                                    </option>
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-info">Assign Objective</button>
