@@ -204,4 +204,9 @@ public class QueryController {
                         .programName(resultSet.getString("program_name"))
                         .build());
     }
+
+//    SELECT *,er.students_met/s.enrolled_students FROM university.sections s
+//    JOIN university.programobjectives pc ON s.course_id=pc.course_id
+//    JOIN university.evaluationresults er ON s.section_number=er.section_number
+//    WHERE (year='2013' AND (semester = 'Fall' OR semester = 'Summer')) OR year='2014' AND semester = 'Spring'
 }

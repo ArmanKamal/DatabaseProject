@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -22,7 +23,7 @@ public class MainController {
 
 
     @GetMapping("/")
-    public ModelAndView showView(@ModelAttribute("Departments") Departments departments,
+    public String showView(@ModelAttribute("Departments") Departments departments,
                                  @ModelAttribute("Persons") Persons persons,
                                  @ModelAttribute("Programs") Programs programs,
                                  @ModelAttribute("FacultyMembers") FacultyMembers facultyMembers,
@@ -32,18 +33,19 @@ public class MainController {
                                  @ModelAttribute("SubObjectives") SubObjectives subObjectives,
                                  @ModelAttribute("ProgramCourses") ProgramCourses programCourses,
                                  @ModelAttribute("ProgramObjectives") ProgramObjectives programObjectives,
-                                 @ModelAttribute("EvaluationResults") EvaluationResults evaluationResults) {
-        ModelAndView mav = new ModelAndView("index");
-        mav.addObject("departments", getDepartments());
-        mav.addObject("courses", getCourses());
-        mav.addObject("faculties", getFacultyMembers());
-        mav.addObject("programs", getPrograms());
-        mav.addObject("sections", getSections());
-        mav.addObject("learningObjectives", getObjectives());
-        mav.addObject("subObjectives", getSubObjectives());
-        mav.addObject("programCourses", getProgramCourses());
+                                 @ModelAttribute("EvaluationResults") EvaluationResults evaluationResults,
+                                 Model mav) {
+        mav.addAttribute("departments",getDepartments());
+        mav.addAttribute("departments", getDepartments());
+        mav.addAttribute("courses", getCourses());
+        mav.addAttribute("faculties", getFacultyMembers());
+        mav.addAttribute("programs", getPrograms());
+        mav.addAttribute("sections", getSections());
+        mav.addAttribute("learningObjectives", getObjectives());
+        mav.addAttribute("subObjectives", getSubObjectives());
+        mav.addAttribute("programCourses", getProgramCourses());
 
-        return mav;
+        return "index";
     }
 
 
@@ -100,8 +102,8 @@ public class MainController {
     public String processFacultyForm(@ModelAttribute("facultyMember") FacultyMembers facultyMember, RedirectAttributes redirectAttributes) {
         try {
             String successMessage = "Faculty member '" + facultyMember.getFacultyName() + "' created successfully!";
-            jdbcTemplate.update("INSERT INTO FacultyMembers (faculty_name, email_address, faculty_rank, department_code) VALUES (?, ?, ?, ?)",
-                    facultyMember.getFacultyName(), facultyMember.getEmailAddress(), facultyMember.getFacultyRank().name(), facultyMember.getDepartmentCode());
+            jdbcTemplate.update("INSERT INTO FacultyMembers (faculty_id,faculty_name, email_address, faculty_rank, department_code) VALUES (?,?, ?, ?, ?)",
+                    facultyMember.getFacultyId(), facultyMember.getFacultyName(), facultyMember.getEmailAddress(), facultyMember.getFacultyRank().name(), facultyMember.getDepartmentCode());
 
             redirectAttributes.addFlashAttribute("successMessage", successMessage);
         } catch (Exception e) {
@@ -132,8 +134,8 @@ public class MainController {
     @PostMapping("/processSectionForm")
     public String processSectionForm(@ModelAttribute("Sections") Sections section, RedirectAttributes redirectAttributes) {
         try {
-            jdbcTemplate.update("INSERT INTO Sections (course_id, semester, faculty_id, enrolled_students, year) VALUES (?, ?, ?, ?, ?)",
-                    section.getCourseId(), section.getSemester().name(), section.getFacultyId(), section.getEnrolledStudents(), section.getYear());
+            jdbcTemplate.update("INSERT INTO Sections (section_number, course_id, semester, faculty_id, enrolled_students, year) VALUES (?, ?, ?, ?,?, ?)",
+                   section.getSectionNumber(), section.getCourseId(), section.getSemester().name(), section.getFacultyId(), section.getEnrolledStudents(), section.getYear());
 
             String successMessage = "Section created successfully for course ID: " + section.getCourseId() +
                     ", Semester: " + section.getSemester();
@@ -163,8 +165,8 @@ public class MainController {
     @PostMapping("/processLearningSubObjective")
     public String processSectionForm(@ModelAttribute("SubObjectives") SubObjectives subObjectives, RedirectAttributes redirectAttributes) {
         try {
-            jdbcTemplate.update("INSERT INTO SubObjectives (objective_code, description) VALUES (?, ?)",
-                    subObjectives.getObjectiveCode(), subObjectives.getDescription());
+            jdbcTemplate.update("INSERT INTO SubObjectives (sub_objective_code, objective_code, description) VALUES (?, ?, ?)",
+                    subObjectives.getSubObjectiveCode(), subObjectives.getObjectiveCode(), subObjectives.getDescription());
 
             String successMessage = "Sub Objectives created successfully for objective ID: " + subObjectives.getObjectiveCode();
             redirectAttributes.addFlashAttribute("successMessage", successMessage);
@@ -178,11 +180,26 @@ public class MainController {
     @PostMapping("/processProgramCoursesForm")
     public String processSectionForm(@ModelAttribute("ProgramCourses") ProgramCourses programCourses, RedirectAttributes redirectAttributes) {
         try {
-            jdbcTemplate.update("INSERT INTO ProgramCourses (program_id, course_id) VALUES (?, ?)",
-                    programCourses.getProgramId(), programCourses.getCourseId());
+            int rowCount = jdbcTemplate.queryForObject(
+                    "SELECT COUNT(*) FROM Programs P JOIN Courses C ON P.department_code = C.department_code WHERE P.program_id = ? AND C.course_id = ?",
+                    Integer.class,
+                    programCourses.getProgramId(),
+                    programCourses.getCourseId()
+            );
 
-            String successMessage = "Program-Course pair successfully made for program ID " + programCourses.getProgramId() + " and course ID " + programCourses.getCourseId();
-            redirectAttributes.addFlashAttribute("successMessage", successMessage);
+            if (rowCount > 0) {
+                jdbcTemplate.update(
+                        "INSERT INTO ProgramCourses (program_id, course_id) VALUES (?, ?)",
+                        programCourses.getProgramId(),
+                        programCourses.getCourseId()
+                );
+
+                String successMessage = "Program-Course pair successfully made for program ID " + programCourses.getProgramId() + " and course ID " + programCourses.getCourseId();
+                redirectAttributes.addFlashAttribute("successMessage", successMessage);
+            } else {
+                String failureMessage = "Program and course do not belong to the same department.";
+                redirectAttributes.addFlashAttribute("failureMessage", failureMessage);
+            }
         } catch (Exception e) {
             String failure = "Failed because of " + e;
             redirectAttributes.addFlashAttribute("failureMessage", failure);
