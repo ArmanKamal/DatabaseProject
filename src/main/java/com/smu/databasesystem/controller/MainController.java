@@ -44,6 +44,7 @@ public class MainController {
         mav.addAttribute("learningObjectives", getObjectives());
         mav.addAttribute("subObjectives", getSubObjectives());
         mav.addAttribute("programCourses", getProgramCourses());
+        mav.addAttribute("programObjectives", getProgramObjectives());
 
         return "index";
     }
@@ -243,18 +244,39 @@ public class MainController {
     @PostMapping("/processEvaluationForm")
     public String processSectionForm(@ModelAttribute("EvaluationResults") EvaluationResults evaluationResults, RedirectAttributes redirectAttributes) {
         try {
-            jdbcTemplate.update("INSERT INTO EvaluationResults (section_number, sub_objective_code, evaluation_method, students_met) VALUES (?, ?, ?, ?)",
-                    evaluationResults.getSectionNumber(), evaluationResults.getSubObjectiveCode(), evaluationResults.getEvaluationMethod(), evaluationResults.getStudentsMet());
+            String[] parts = evaluationResults.getSectionNumber().split(",");
+            String couresId = parts[0];
+            String year = parts[1];
+            String semester = parts[2];
+            String sectionNumber = parts[3];
 
-            String successMessage = "Successfully posted evaluation results for subobjective " + evaluationResults.getSubObjectiveCode() + " for section " + evaluationResults.getSectionNumber();
-            redirectAttributes.addFlashAttribute("successMessage", successMessage);
+            String[] programObjectiveParts = evaluationResults.getSubObjectiveCode().split(",");
+            String programId = programObjectiveParts[0];
+            String subObjectiveCode = programObjectiveParts[1];
+
+            int rowCount = jdbcTemplate.queryForObject(
+                    "SELECT COUNT(*) FROM ProgramObjectives WHERE course_id = ?",
+                    Integer.class,
+                   couresId
+            );
+            if(rowCount>0){
+                jdbcTemplate.update("INSERT INTO EvaluationResults (section_course_id,program_course_id,section_number,program_id, semester,sub_objective_code, evaluation_method, students_met,year) VALUES (?, ?, ?, ?,?,?,?,?,?)",
+                        couresId,couresId,sectionNumber,programId,semester,subObjectiveCode,evaluationResults.getEvaluationMethod(), evaluationResults.getStudentsMet(),year);
+
+                String successMessage = "Successfully posted evaluation results for subobjective " + evaluationResults.getSubObjectiveCode() + " for section " + evaluationResults.getSectionNumber();
+                redirectAttributes.addFlashAttribute("successMessage", successMessage);
+            }
+            else{
+                String failure = "Course is not associated with the Subobjective";
+                redirectAttributes.addFlashAttribute("failureMessage", failure);
+            }
+
         } catch (Exception e) {
             String failure = "Failed because of " + e;
             redirectAttributes.addFlashAttribute("failureMessage", failure);
         }
         return "redirect:/";
     }
-
     private List<Departments> getDepartments() {
         String sql = "SELECT * FROM Departments";
         return jdbcTemplate.query(sql, (resultSet, rowNum) -> Departments.builder()
@@ -338,6 +360,16 @@ public class MainController {
                 .courseId(resultSet.getString("course_id"))
                 .courseName(resultSet.getString("course_title"))
                 .programName(resultSet.getString("program_name"))
+                .build());
+    }
+
+    private List<ProgramObjectives> getProgramObjectives() {
+        String sql = "SELECT * FROM ProgramObjectives";
+        return jdbcTemplate.query(sql, (resultSet, rowNum) -> ProgramObjectives.builder()
+                .programId(resultSet.getString("program_id"))
+                .courseId(resultSet.getString("course_id"))
+                .subObjectiveCode(resultSet.getString("sub_objective_code"))
+                .objectiveCode(resultSet.getString("objective_code"))
                 .build());
     }
 

@@ -10,8 +10,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class EvaluationResults {
-    private Long sectionNumber;
+    private String section_course_id;
+    private String program_course_id;
+    private String programId;
+    private String sectionNumber;
+    private Semester semester;
+    private String year;
     private String subObjectiveCode;
     private String evaluationMethod;
-    private Long studentsMet;
+    private String studentsMet;
 }

@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS Courses
 -- Table for Sections/
 CREATE TABLE IF NOT EXISTS Sections
 (
-    section_number    INT(3),
+    section_number    INT(3) ZEROFILL ,
     course_id         CHAR(8)                         NOT NULL,
     semester          ENUM ('Fall','Spring','Summer') NOT NULL,
     faculty_id        INT                             NOT NULL,
@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS SubObjectives
 (
     sub_objective_code VARCHAR(20),
     objective_code     VARCHAR(20),
-    PRIMARY KEY (sub_objective_code,objective_code),
+    PRIMARY KEY (sub_objective_code, objective_code),
     description        TEXT NOT NULL,
     FOREIGN KEY (objective_code) REFERENCES LearningObjectives (objective_code)
 );
@@ -78,8 +78,8 @@ CREATE TABLE IF NOT EXISTS SubObjectives
 -- Table for ProgramCourses
 CREATE TABLE IF NOT EXISTS ProgramCourses
 (
-    program_id      INT,
-    course_id       CHAR(8),
+    program_id INT,
+    course_id  CHAR(8),
     PRIMARY KEY (program_id, course_id),
     FOREIGN KEY (program_id) REFERENCES Programs (program_id),
     FOREIGN KEY (course_id) REFERENCES Courses (course_id)
@@ -91,28 +91,28 @@ CREATE TABLE IF NOT EXISTS ProgramObjectives
 (
     program_id         INT,
     course_id          CHAR(8),
-    sub_objective_code     VARCHAR(20),
-    objective_code         VARCHAR(20),
+    sub_objective_code VARCHAR(20),
+    objective_code     VARCHAR(20),
     PRIMARY KEY (program_id, course_id, sub_objective_code),
-    FOREIGN KEY (program_id,course_id) REFERENCES ProgramCourses (program_id,course_id),
+    FOREIGN KEY (program_id, course_id) REFERENCES ProgramCourses (program_id, course_id),
     FOREIGN KEY (sub_objective_code, objective_code) REFERENCES SubObjectives (sub_objective_code, objective_code)
 );
 -- Table for EvaluationResults // Change the section Number
 CREATE TABLE IF NOT EXISTS EvaluationResults
 (
+    section_course_id  CHAR(8),
+    program_course_id  CHAR(8),
+    section_number     INT(3) ZEROFILL,
     program_id         INT,
-    course_id          CHAR(8),
-    section_number     INT(3),
-    semester          ENUM ('Fall','Spring','Summer') NOT NULL,
-    objective_code     VARCHAR(20),
+    semester           ENUM ('Fall','Spring','Summer') NOT NULL,
     sub_objective_code VARCHAR(20),
-    evaluation_method  VARCHAR(50) NOT NULL,
-    students_met       INT         NOT NULL,
-    year              INT                             NOT NULL,
+    evaluation_method  VARCHAR(50)                     NOT NULL,
+    students_met       INT                             NOT NULL,
+    year               INT                             NOT NULL,
 
-    PRIMARY KEY (program_id, course_id, section_number, objective_code),
-    FOREIGN KEY (program_id,course_id,objective_code,sub_objective_code) REFERENCES ProgramObjectives (program_id,course_id,objective_code,sub_objective_code),
-    FOREIGN KEY (section_number,semester,course_id, year) REFERENCES Sections (section_number,semester,course_id,year)
+    PRIMARY KEY (section_course_id, section_number, semester, year, sub_objective_code),
+    FOREIGN KEY (program_id, program_course_id, sub_objective_code) REFERENCES ProgramObjectives (program_id, course_id, sub_objective_code),
+    FOREIGN KEY (section_number, semester, section_course_id, year) REFERENCES Sections (section_number, semester, course_id, year)
 
 );
 

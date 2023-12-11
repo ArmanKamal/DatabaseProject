@@ -39,7 +39,7 @@
                     <select id="programSelector" name="programId" class="form-control">
                         <option value="">-- Select --</option>
                         <!-- Populate courses options dynamically from your model -->
-                        <option th:each="program : ${programs}" th:value="${program.getProgramId()}"
+                        <option th:each="program: ${programs}" th:value="${program.getProgramId()}"
                                 th:text="${program.getProgramName()}">
                         </option>
                     </select>
@@ -52,20 +52,18 @@
                 <table class="table table-bordered table-striped">
                     <thead class="thead-dark">
                     <tr>
+                        <th>#</th>
                         <th>Course Id</th>
-                        <th>Course Name</th>
                         <th>Objective Code</th>
                         <th>SubObjective Code</th>
-                        <th>Description</th>
                     </tr>
                     </thead>
-                    <tbody th:each="course : ${courses}">
+                    <tbody th:each="course,stat : ${programObjectives}">
                     <tr>
+                        <td th:text="${stat.index + 1}"></td>
                         <td th:text="${course.courseId}"></td>
-                        <td th:text="${course.courseTitle}"></td>
                         <td th:text="${course.objectiveCode}"></td>
                         <td th:text="${course.subObjectiveCode}"></td>
-                        <td th:text="${course.description}"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -80,7 +78,7 @@
                         <th>Objective Code</th>
                     </tr>
                     </thead>
-                    <tbody th:each="objective, stat : ${objectives}">
+                    <tbody th:each="objective, stat : ${programObjectives}">
                     <tr>
                         <td th:text="${stat.index + 1}"></td>
                         <td th:text="${objective.objectiveCode}"></td>
