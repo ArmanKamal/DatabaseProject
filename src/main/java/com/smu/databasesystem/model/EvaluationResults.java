@@ -14,9 +14,16 @@ public class EvaluationResults {
     private String program_course_id;
     private String programId;
     private String sectionNumber;
-    private Semester semester;
+    private String semester;
     private String year;
+    private String objectiveCode;
     private String subObjectiveCode;
     private String evaluationMethod;
+
+    private String enrolledStudents;
+
     private String studentsMet;
+
+    private String percentageOfStudentMet;
+
 }

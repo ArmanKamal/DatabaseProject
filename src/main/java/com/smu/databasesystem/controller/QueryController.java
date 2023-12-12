@@ -84,6 +84,7 @@ public class QueryController {
     public ModelAndView showEvaluationPage(@ModelAttribute("EvaluationResults") EvaluationResults evaluationResults,
                                            @RequestParam(name = "semester", required = false) String semester,
                                            @RequestParam(name = "programId", required = false) String program,
+                                           @RequestParam(name = "yearId", required = false) String year,
                                            Model model,
                                            RedirectAttributes redirectAttributes) {
         ModelAndView mav = new ModelAndView("evaluation");
@@ -94,10 +95,16 @@ public class QueryController {
             mav.addObject("distinctSemesters", distinctSemesters);
             mav.addObject("distinctPrograms", distinctPrograms);
             if (semester != null && !semester.isEmpty() && program != null && !program.isEmpty()) {
-//                List<EvaluationResults> evaluationResultsList = getEvaluationResults(semester, program);
-//                model.addAttribute("evaluationResultsList", evaluationResultsList);
+                List<EvaluationResults> evaluationResultsList = getEvaluationResults(semester, program);
+                model.addAttribute("evaluationResultsList", evaluationResultsList);
+                model.addAttribute("selectedSem", semester);
+                model.addAttribute("selectedPro", getProgramById(program).get(0).getProgramName());
 
-
+            }
+            if (year != null && !year.isEmpty()) {
+                List<EvaluationResults> evaluationResultsList = getEvaluationResultBasedOnYear(year);
+                model.addAttribute("evaluationResultsYearList", evaluationResultsList);
+                model.addAttribute("selectedYear", year);
             }
         } catch (Exception e) {
             String failure = "Failed because of " + e;
@@ -123,7 +130,7 @@ public class QueryController {
 
     private List<CourseDetails> getObjectivesForProgram(String programId) {
         String sql = "SELECT lo.objective_code, lo.program_id,so.sub_objective_code,so.description FROM LearningObjectives lo LEFT JOIN SubObjectives so ON lo.objective_code = so.objective_code" +
-        " WHERE program_id = ?";
+                " WHERE program_id = ?";
 
         return jdbcTemplate.query(sql, new Object[]{programId}, (resultSet, rowNum) -> CourseDetails.builder()
                 .objectiveCode(resultSet.getString("objective_code"))
@@ -137,6 +144,14 @@ public class QueryController {
                 .programId(Long.valueOf(resultSet.getString("program_id")))
                 .programName(resultSet.getString("program_name"))
                 .build());
+    }
+
+    private List<Programs> getProgramById(String programId) {
+        String sql = "SELECT * FROM Programs WHERE program_id=?";
+        return jdbcTemplate.query(sql, (resultSet, rowNum) -> Programs.builder()
+                .programId(Long.valueOf(resultSet.getString("program_id")))
+                .programName(resultSet.getString("program_name"))
+                .build(), programId);
     }
 
     private List<Departments> getDepartments() {
@@ -173,29 +188,31 @@ public class QueryController {
                 .build());
     }
 
-//    public List<EvaluationResults> getEvaluationResults(
-//            @RequestParam("semester") String semester,
-//            @RequestParam("program") String program) {
-//
-//        String query = "SELECT er.section_number, er.sub_objective_code, er.evaluation_method, er.students_met " +
-//                "FROM EvaluationResults er " +
-//                "JOIN Sections s ON er.section_number = s.section_number " +
-//                "JOIN ProgramCourses c ON s.course_id = c.course_id " +
-//                "WHERE s.semester = ? AND c.program_id = ?";
-//
-//        return jdbcTemplate.query(query,
-//                (resultSet, rowNum) -> new EvaluationResults(
-//                        resultSet.getString("section_number"),
-//                        resultSet.getString("sub_objective_code"),
-//                        resultSet.getString("evaluation_method"),
-//                        resultSet.getString("students_met"),
-//                        resultSet.getString("semester"),
-//                        resultSet.getString("year"),
-//                        resultSet.getString("program_id")
-//                ),
-//                semester, program);
-//
-//    }
+    public List<EvaluationResults> getEvaluationResults(
+            @RequestParam("semester") String semester,
+            @RequestParam("program") String program) {
+
+        String query = "SELECT S.section_number, S.course_id, COALESCE(E.program_id, 'Not Found') AS program_id, " +
+                "S.semester, COALESCE(E.sub_objective_code, 'Not Found') AS sub_objective_code, " +
+                "COALESCE(E.evaluation_method, 'Not Found') AS evaluation_method, " +
+                "COALESCE(E.students_met, 'Not Found') AS students_met, COALESCE(E.year, 'Not Found') AS year " +
+                " FROM Sections S " +
+                " LEFT JOIN EvaluationResults E ON S.section_number = E.section_number " +
+                " AND S.semester = E.semester AND S.course_id = E.section_course_id AND E.program_id = ? " +
+                " WHERE S.semester = ? AND E.program_id = ? " +
+                " ORDER BY section_number, course_id, sub_objective_code, evaluation_method, year";
+        ;
+
+        return jdbcTemplate.query(query,
+                (resultSet, rowNum) -> EvaluationResults.builder()
+                        .evaluationMethod(resultSet.getString("evaluation_method"))
+                        .sectionNumber(resultSet.getString("section_number"))
+                        .subObjectiveCode(resultSet.getString("sub_objective_code"))
+                        .studentsMet(resultSet.getString("students_met"))
+                        .program_course_id(resultSet.getString("course_id"))
+                        .year(resultSet.getString("year")).build(), program, semester, program);
+
+    }
 
     public List<String> getDistinctSemesters() {
         String query = "SELECT DISTINCT semester FROM Sections";
@@ -219,10 +236,44 @@ public class QueryController {
                         .courseId(resultSet.getString("course_id"))
                         .objectiveCode(resultSet.getString("objective_code"))
                         .subObjectiveCode(resultSet.getString("sub_objective_code"))
-                        .build(),programId);
+                        .build(), programId);
     }
-//    SELECT *,er.students_met/s.enrolled_students FROM university.sections s
-//    JOIN university.programobjectives pc ON s.course_id=pc.course_id
-//    JOIN university.evaluationresults er ON s.section_number=er.section_number
-//    WHERE (year='2013' AND (semester = 'Fall' OR semester = 'Summer')) OR year='2014' AND semester = 'Spring'
+
+    public List<EvaluationResults> getEvaluationResultBasedOnYear(String year) {
+        String sql = "SELECT " +
+                "po.objective_code AS program_objective_code, " +
+                "po.sub_objective_code AS program_sub_objective_code, " +
+                "s.course_id AS section_course_id, " +
+                "s.section_number, " +
+                "s.semester, " +
+                "s.year, " +
+                "er.evaluation_method, " +
+                "s.enrolled_students, " +
+                "er.students_met, " +
+                "LEAST((er.students_met / NULLIF(s.enrolled_students, 0)) * 100, 100) AS percentage_students_met " +
+                "FROM " +
+                "university.programobjectives po " +
+                "JOIN " +
+                "university.programcourses pc ON po.program_id = pc.program_id " +
+                "JOIN " +
+                "university.sections s ON pc.course_id = s.course_id " +
+                "JOIN " +
+                "university.evaluationresults er ON s.section_number = er.section_number AND s.semester = er.semester AND s.year = er.year " +
+                "WHERE (s.year = ? AND (s.semester = 'Fall' OR s.semester = 'Summer')) OR (s.year = ? AND s.semester = 'Spring')";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) ->
+                EvaluationResults.builder()
+                        .section_course_id(rs.getString("section_course_id"))
+                        .program_course_id(rs.getString("section_course_id"))
+                        .sectionNumber(rs.getString("section_number"))
+                        .semester(rs.getString("semester"))
+                        .year(rs.getString("year"))
+                        .objectiveCode(rs.getString("program_objective_code"))
+                        .subObjectiveCode(rs.getString("program_sub_objective_code"))
+                        .evaluationMethod(rs.getString("evaluation_method"))
+                        .enrolledStudents(rs.getString("enrolled_students"))
+                        .studentsMet(rs.getString("students_met"))
+                        .percentageOfStudentMet(rs.getString("percentage_students_met"))
+                        .build(), year, String.valueOf(Integer.parseInt(year )+1));
+    }
 }

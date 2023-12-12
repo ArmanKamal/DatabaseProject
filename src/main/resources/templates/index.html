@@ -17,15 +17,14 @@
             <a href="/">Home</a>
         </li>
         <li>
-            <a href="/departments">Departments</a>
+            <a href="/departments">Departments Info</a>
         </li>
         <li>
-            <a href="/programs">Programs</a>
+            <a href="/programs">Programs Info</a>
         </li>
         <li>
-            <a href="/evaluations">Evaluations</a>
+            <a href="/evaluations">Evaluations Info</a>
         </li>
-        <!-- Add more sidebar items as needed -->
     </ul>
 </nav>
 <!-- Main content -->
@@ -39,13 +38,13 @@
                         <form class="form" th:action="@{/processDepartmentForm}" th:object="${Departments}"
                               method="post">
                             <div class="form-group">
-                                <label for="programName">Enter Department Code:</label>
+                                <label for="departmentCode">Enter Department Code:</label>
                                 <input type="text" class="form-control" id="departmentCode" th:field="*{departmentCode}"
                                        required>
                             </div>
 
                             <div class="form-group">
-                                <label for="programName">Enter Department Name:</label>
+                                <label for="departmentName">Enter Department Name:</label>
                                 <input type="text" class="form-control" id="departmentName"
                                        th:field="*{departmentName}"
                                        required>
@@ -86,8 +85,8 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="departmentCode">Select Department:</label>
-                                <select class="form-control" id="departmentCode" th:field="*{departmentCode}"
+                                <label for="departmentCode2">Select Department:</label>
+                                <select class="form-control" id="departmentCode2" th:field="*{departmentCode}"
                                         required>
                                     <option th:each="department : ${departments}"
                                             th:value="${department.departmentCode}"
@@ -110,8 +109,8 @@
                                        required>
                             </div>
                             <div class="form-group">
-                                <label for="departmentCode">Select Department:</label>
-                                <select class="form-control" id="departmentCode" th:field="*{departmentCode}"
+                                <label for="departmentCode3">Select Department:</label>
+                                <select class="form-control" id="departmentCode3" th:field="*{departmentCode}"
                                         required>
                                     <option th:each="department : ${departments}"
                                             th:value="${department.departmentCode}"
@@ -120,11 +119,11 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="facultyId">Select Head of Program:</label>
-                                <select class="form-control" id="facultyId" th:field="*{headOfProgramId}"
+                                <label for="facultyId2">Select Head of Program:</label>
+                                <select class="form-control" id="facultyId2" th:field="*{headOfProgramId}"
                                         required>
                                     <option th:each="faculty: ${faculties}" th:value="${faculty.facultyId}"
-                                        th:text="'Name: ' + ${faculty.facultyName} + ' Dept: ' + ${faculty.getDepartmentCode()}">
+                                            th:text="'Name: ' + ${faculty.facultyName} + ' Dept: ' + ${faculty.getDepartmentCode()}">
                                     </option>
                                 </select>
                             </div>
@@ -141,8 +140,8 @@
                         <h4 class="card-title text-center mb-4">Course Form</h4>
                         <form class="form" th:action="@{/processCourseForm}" th:object="${Courses}" method="post">
                             <div class="form-group">
-                                <label for="courseId">Course ID:</label>
-                                <input type="text" class="form-control" id="courseId" th:field="*{courseId}"
+                                <label for="courseId2">Course ID:</label>
+                                <input type="text" class="form-control" id="courseId2" th:field="*{courseId}"
                                        pattern="[0-9]{4}" title="Please enter a 4-digit number" required>
                                 <small class="form-text text-muted">Please enter a 4-digit number.</small>
                             </div>
@@ -157,8 +156,8 @@
                                           th:field="*{courseDescription}" required/>
                             </div>
                             <div class="form-group">
-                                <label for="departmentCode">Select Department:</label>
-                                <select class="form-control" id="departmentCode" th:field="*{departmentCode}"
+                                <label for="departmentCode4">Select Department:</label>
+                                <select class="form-control" id="departmentCode4" th:field="*{departmentCode}"
                                         required>
                                     <option th:each="department : ${departments}"
                                             th:value="${department.departmentCode}"
@@ -176,15 +175,16 @@
                         <h4 class="card-title text-center mb-4">Section Number</h4>
                         <form class="form" th:action="@{/processSectionForm}" th:object="${Sections}" method="post">
                             <div class="form-group">
-                                <label for="sectionNumber">Section Id: </label>
-                                <input type="text" class="form-control" id="sectionNumber"
+                                <label for="sectionNumber2">Section Id: </label>
+                                <input type="text" class="form-control" id="sectionNumber2"
                                        th:field="*{sectionNumber}"
                                        required>
-                                <small class="form-text text-muted">Please enter a positive number between (001-999).</small>
+                                <small class="form-text text-muted">Please enter a positive number between
+                                    (001-999).</small>
                             </div>
                             <div class="form-group">
-                                <label for="courseId">Select Course:</label>
-                                <select class="form-control" id="courseId" th:field="*{courseId}"
+                                <label for="courseId3">Select Course:</label>
+                                <select class="form-control" id="courseId3" th:field="*{courseId}"
                                         required>
                                     <option th:each="course : ${courses}"
                                             th:value="${course.courseId}"
@@ -200,8 +200,8 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="facultyId">Select Faculty:</label>
-                                <select class="form-control" id="facultyId" th:field="*{facultyId}"
+                                <label for="facultyId3">Select Faculty:</label>
+                                <select class="form-control" id="facultyId3" th:field="*{facultyId}"
                                         required>
                                     <option th:each="faculty: ${faculties}"
                                             th:value="${faculty.facultyId}"
@@ -232,13 +232,13 @@
                         <form class="form" th:action="@{/processLearningObjective}" th:object="${LearningObjectives}"
                               method="post">
                             <div class="form-group">
-                                <label for="objectiveCode">Objective Code:</label>
-                                <input type="text" class="form-control" id="objectiveCode" th:field="*{objectiveCode}"
+                                <label for="objectiveCode2">Objective Code:</label>
+                                <input type="text" class="form-control" id="objectiveCode2" th:field="*{objectiveCode}"
                                        required>
                             </div>
                             <div class="form-group">
-                                <label for="programId">Select Program:</label>
-                                <select class="form-control" id="programId" th:field="*{programId}"
+                                <label for="programId2">Select Program:</label>
+                                <select class="form-control" id="programId2" th:field="*{programId}"
                                         required>
                                     <option th:each="program : ${programs}"
                                             th:value="${program.programId}"
@@ -257,8 +257,9 @@
                         <form class="form" th:action="@{/processLearningSubObjective}" th:object="${SubObjectives}"
                               method="post">
                             <div class="form-group">
-                                <label for="subObjectiveCode">SubObjective Code:</label>
-                                <input type="text" class="form-control" id="subObjectiveCode" th:field="*{subObjectiveCode}"
+                                <label for="subObjectiveCode2">SubObjective Code:</label>
+                                <input type="text" class="form-control" id="subObjectiveCode2"
+                                       th:field="*{subObjectiveCode}"
                                        required>
                             </div>
                             <div class="form-group">
@@ -289,8 +290,8 @@
                         <form class="form" th:action="@{/processProgramCoursesForm}" th:object="${ProgramCourses}"
                               method="post">
                             <div class="form-group">
-                                <label for="programId">Select Program:</label>
-                                <select class="form-control" id="programId" th:field="*{programId}"
+                                <label for="programId3">Select Program:</label>
+                                <select class="form-control" id="programId3" th:field="*{programId}"
                                         required>
                                     <option th:each="program : ${programs}"
                                             th:value="${program.programId}"
@@ -299,8 +300,8 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="courseId">Select Course:</label>
-                                <select class="form-control" id="courseId" th:field="*{courseId}"
+                                <label for="courseId4">Select Course:</label>
+                                <select class="form-control" id="courseId4" th:field="*{courseId}"
                                         required>
                                     <option th:each="course : ${courses}"
                                             th:value="${course.courseId}"
@@ -316,12 +317,13 @@
                 <div class="card h-100">
                     <div class="card-body">
                         <h4 class="card-title text-center mb-4">Assignment Form</h4>
-                        <form class="form" th:action="@{/processProgramObjectivesForm}" th:object="${ProgramObjectives}" method="post">
+                        <form class="form" th:action="@{/processProgramObjectivesForm}" th:object="${ProgramObjectives}"
+                              method="post">
                             <div class="form-group">
                                 <label for="programId">Select Program:</label>
                                 <select class="form-control" id="programId" th:field="*{programId}"
                                         required>
-                                    <option th:each="program : ${programCourses}"
+                                    <option th:each="program : ${programs}"
                                             th:value="${program.programId}"
                                             th:text="${program.programName}"></option>
                                 </select>
@@ -355,7 +357,8 @@
                 <div class="card h-100">
                     <div class="card-body">
                         <h4 class="card-title text-center mb-4">Evaluation Results Form</h4>
-                        <form class="form" th:action="@{/processEvaluationForm}" th:object="${EvaluationResults}" method="post">
+                        <form class="form" th:action="@{/processEvaluationForm}" th:object="${EvaluationResults}"
+                              method="post">
                             <div class="form-group">
                                 <label for="programId">Select Section:</label>
                                 <select class="form-control" id="sectionNumber" th:field="*{sectionNumber}"
@@ -416,50 +419,5 @@
         crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-<!--<script>-->
-<!--    $(document).ready(function () {-->
-<!--        $("#subObjectiveProgram").change(function () {-->
-<!--            var selectedProgramId = $(this).val();-->
-
-<!--            $.ajax({-->
-<!--                url: '/fetchCourses',-->
-<!--                type: 'GET',-->
-<!--                data: {programId: selectedProgramId},-->
-<!--                success: function (data) {-->
-<!--                    console.log(data);-->
-
-<!--                    // Update the courses dropdown with the retrieved data-->
-<!--                    var coursesDropdown = $("#subObjectiveCourseId");-->
-<!--                    var learningObjectiveCodeDropdown = $("#subLearningObjectiveCode");-->
-<!--                    var subLearningSubObjectiveCode = $("#subLearningSubObjectiveCode");-->
-
-<!--                    coursesDropdown.empty(); // Clear existing options-->
-<!--                    learningObjectiveCodeDropdown.empty();-->
-<!--                    subLearningSubObjectiveCode.empty();-->
-
-<!--                    // Append new options based on the fetched data-->
-<!--                    for (var i = 0; i < data.length; i++) {-->
-<!--                        console.log(data);-->
-<!--                        var course = $("<option>")-->
-<!--                            .val(data[i].course_id)-->
-<!--                            .text(data[i].course_title);-->
-<!--                        var learningCode = $("<option>")-->
-<!--                            .val(data[i].objective_code)-->
-<!--                            .text(data[i].objective_code);-->
-<!--                        var subObjectiveCode = $("<option>")-->
-<!--                            .val(data[i].sub_objective_code)-->
-<!--                            .text(data[i].sub_objective_code);-->
-<!--                        coursesDropdown.append(course);-->
-<!--                        learningObjectiveCodeDropdown.append(learningCode)-->
-<!--                        subLearningSubObjectiveCode.append(subObjectiveCode)-->
-<!--                    }-->
-<!--                },-->
-<!--                error: function (error) {-->
-<!--                    console.error('Error fetching courses:', error);-->
-<!--                }-->
-<!--            });-->
-<!--        });-->
-<!--    });-->
-<!--</script>-->
 </body>
 </html>

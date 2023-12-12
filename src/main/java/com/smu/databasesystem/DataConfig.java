@@ -57,6 +57,7 @@ public class DataConfig {
 
         // Add the SQL script to the populator
         populator.addScript(new ClassPathResource("initialize.sql"));
+        populator.addScript(new ClassPathResource("data.sql"));
 
         // Execute the populator on the dataSource
         DatabasePopulatorUtils.execute(populator, dataSource);

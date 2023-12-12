@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -135,12 +137,30 @@ public class MainController {
     @PostMapping("/processSectionForm")
     public String processSectionForm(@ModelAttribute("Sections") Sections section, RedirectAttributes redirectAttributes) {
         try {
-            jdbcTemplate.update("INSERT INTO Sections (section_number, course_id, semester, faculty_id, enrolled_students, year) VALUES (?, ?, ?, ?,?, ?)",
-                    section.getSectionNumber(), section.getCourseId(), section.getSemester().name(), section.getFacultyId(), section.getEnrolledStudents(), section.getYear());
+            String department1 = jdbcTemplate.queryForObject(
+                    "SELECT department_code FROM Courses WHERE course_id = ?",
+                    new Object[]{section.getCourseId()},
+                    String.class
+            );
+            String department2 = jdbcTemplate.queryForObject(
+                    "SELECT department_code FROM FacultyMembers WHERE faculty_id = ?",
+                    new Object[]{section.getFacultyId()},
+                    String.class
+            );
 
-            String successMessage = "Section created successfully for course ID: " + section.getCourseId() +
-                    ", Semester: " + section.getSemester();
-            redirectAttributes.addFlashAttribute("successMessage", successMessage);
+            if(department1.equalsIgnoreCase(department2)){
+
+                jdbcTemplate.update("INSERT INTO Sections (section_number, course_id, semester, faculty_id, enrolled_students, year) VALUES (?, ?, ?, ?,?, ?)",
+                        section.getSectionNumber(), section.getCourseId(), section.getSemester().name(), section.getFacultyId(), section.getEnrolledStudents(), section.getYear());
+
+                String successMessage = "Section created successfully for course ID: " + section.getCourseId() +
+                        ", Semester: " + section.getSemester();
+                redirectAttributes.addFlashAttribute("successMessage", successMessage);
+            }
+            else{
+                String failureMessage = "Faculty and Course doesnot belong to same department.";
+                redirectAttributes.addFlashAttribute("failureMessage", failureMessage);
+            }
         } catch (Exception e) {
             String failure = "Failed because of " + e;
             redirectAttributes.addFlashAttribute("failureMessage", failure);
@@ -373,21 +393,6 @@ public class MainController {
                 .build());
     }
 
-
-//    private List<ProgramObjectives> getProgramObjectives() {
-//        String sql = "SELECT DISTINCT  pc.program_id, pc.course_id, po.objective_code, po.sub_objective_code, p.program_name" +
-//                " FROM ProgramCourses pc" +
-//                " LEFT JOIN ProgramObjectives po ON pc.program_id = po.program_id" +
-//                " LEFT JOIN Programs p ON pc.program_id = p.program_id" +
-//                " GROUP BY pc.program_id, po.course_id, po.objective_code, po.sub_objective_code, p.program_name;";
-//        return jdbcTemplate.query(sql, (resultSet, rowNum) -> ProgramObjectives.builder()
-//                .programId(resultSet.getString("program_id"))
-//                .courseId(resultSet.getString("course_id"))
-//                .objectiveCode(resultSet.getString("objective_code"))
-//                .subObjectiveCode(resultSet.getString("sub_objective_code"))
-//                .programName(resultSet.getString("program_name"))
-//                .build());
-//    }
 
 }
 
