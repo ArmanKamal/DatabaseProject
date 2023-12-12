@@ -188,7 +188,7 @@
                                         required>
                                     <option th:each="course : ${courses}"
                                             th:value="${course.courseId}"
-                                            th:text="${course.courseTitle}"></option>
+                                            th:text="${course.courseTitle}+' Dept: '+${course.departmentCode}"></option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -205,7 +205,7 @@
                                         required>
                                     <option th:each="faculty: ${faculties}"
                                             th:value="${faculty.facultyId}"
-                                            th:text="${faculty.facultyName}"></option>
+                                            th:text="${faculty.facultyName}+' Dept: '+${faculty.departmentCode}"></option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -268,7 +268,7 @@
                                         required>
                                     <option th:each="objective : ${learningObjectives}"
                                             th:value="${objective.objectiveCode}"
-                                            th:text="${objective.objectiveCode}"></option>
+                                            th:text="'Obj Code: '+${objective.objectiveCode}+' Program Id: '+${objective.programId}"></option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -295,8 +295,7 @@
                                         required>
                                     <option th:each="program : ${programs}"
                                             th:value="${program.programId}"
-                                            th:text="'Dept: '+ ${program.getDepartmentCode()}
-                                            + 'Program: '+${program.programName}"></option>
+                                            th:text="' Program: '+${program.programName}+' Dept: '+ ${program.getDepartmentCode()}"></option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -305,7 +304,7 @@
                                         required>
                                     <option th:each="course : ${courses}"
                                             th:value="${course.courseId}"
-                                            th:text="${course.courseTitle}"></option>
+                                            th:text="' Course: '+${course.courseTitle}+' Dept: '+${course.departmentCode}"></option>
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-info">Create Pairing</button>
@@ -334,7 +333,7 @@
                                         required>
                                     <option th:each="programCourse : ${programCourses}"
                                             th:value="${programCourse.courseId}"
-                                            th:text="${programCourse.courseName}"></option>
+                                            th:text="'Course-Program: '+${programCourse.courseName}+ ' / '+ ${programCourse.programName}"></option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -343,7 +342,7 @@
                                         required>
                                     <option th:each="subObjective : ${subObjectives}"
                                             th:value="${subObjective.subObjectiveCode}+','+${subObjective.objectiveCode}"
-                                            th:text="'Objective: '+${subObjective.getObjectiveCode()}+' Sub-Objective: '
+                                            th:text="'Obj-SubObj : '+${subObjective.getObjectiveCode()}+' / '
                                             +${subObjective.subObjectiveCode}">
                                     </option>
                                 </select>
