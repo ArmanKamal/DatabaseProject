@@ -56,8 +56,6 @@ public class QueryController {
         try {
             mav.addObject("programs", getPrograms());
             if (programId != null && !programId.isEmpty()) {
-                System.out.println("came here" + programId);
-
                 // Get courses for the program
                 List<ProgramObjectives> programObjectives = getProgramObjective(programId);
                 model.addAttribute("programObjectives", programObjectives);
@@ -67,7 +65,6 @@ public class QueryController {
 
                 // Get all objectives for the program
                 List<CourseDetails> objectives = getObjectivesForProgram(programId);
-                System.out.println("Get Objectives" + objectives.get(0));
                 model.addAttribute("objectives", objectives);
 
                 model.addAttribute("programMessage", programId);
