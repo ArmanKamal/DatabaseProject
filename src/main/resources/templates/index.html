@@ -364,7 +364,7 @@
                                         required>
                                     <option th:each="section : ${sections}"
                                             th:value="${section.courseId}+','+${section.year}+','+${section.semester}+','+${section.sectionNumber}"
-                                            th:text="'CourseId: '+${section.courseId}+' Year: '+${section.year}+' Semester: '+${section.semester}+'Section Number: '+${section.sectionNumber}"></option>
+                                            th:text="'CourseId: '+${section.courseId}+' Year: '+${section.year}+' Semester: '+${section.semester}+' Section Number: '+${section.sectionNumber}"></option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -373,7 +373,7 @@
                                         required>
                                     <option th:each="programObjective : ${programObjectives}"
                                             th:value="${programObjective.programId}+','+${programObjective.subObjectiveCode}"
-                                            th:text="'Program Id: '+${programObjective.programId}+'Course id:'+${programObjective.courseId}+'Sub Objective: '+${programObjective.subObjectiveCode}"></option>
+                                            th:text="'Program Id: '+${programObjective.programId}+' Course id: '+${programObjective.courseId}+' Sub Objective: '+${programObjective.subObjectiveCode}"></option>
                                 </select>
                             </div>
                             <div class="form-group">

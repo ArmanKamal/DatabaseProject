@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS Courses
     FOREIGN KEY (department_code) REFERENCES Departments (department_code)
 );
 
--- Table for Sections/
+-- Table for Sections
 CREATE TABLE IF NOT EXISTS Sections
 (
     section_number    INT(3) ZEROFILL ,
@@ -86,7 +86,6 @@ CREATE TABLE IF NOT EXISTS ProgramCourses
 );
 
 -- Table for ProgramObjectives
-
 CREATE TABLE IF NOT EXISTS ProgramObjectives
 (
     program_id         INT,
@@ -97,7 +96,8 @@ CREATE TABLE IF NOT EXISTS ProgramObjectives
     FOREIGN KEY (program_id, course_id) REFERENCES ProgramCourses (program_id, course_id),
     FOREIGN KEY (sub_objective_code, objective_code) REFERENCES SubObjectives (sub_objective_code, objective_code)
 );
--- Table for EvaluationResults // Change the section Number
+
+-- Table for EvaluationResults
 CREATE TABLE IF NOT EXISTS EvaluationResults
 (
     section_course_id  CHAR(8),
@@ -109,10 +109,8 @@ CREATE TABLE IF NOT EXISTS EvaluationResults
     evaluation_method  VARCHAR(50)                     NOT NULL,
     students_met       INT                             NOT NULL,
     year               INT                             NOT NULL,
-
     PRIMARY KEY (section_course_id, section_number, semester, year, sub_objective_code),
     FOREIGN KEY (program_id, program_course_id, sub_objective_code) REFERENCES ProgramObjectives (program_id, course_id, sub_objective_code),
     FOREIGN KEY (section_number, semester, section_course_id, year) REFERENCES Sections (section_number, semester, course_id, year)
-
 );
 

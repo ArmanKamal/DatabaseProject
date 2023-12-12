@@ -31,15 +31,16 @@ VALUES ('COMP1000', 'CS 1', 'Introduction to Computer Science', 'COMP'),
 -- Sections
 INSERT IGNORE INTO university.sections (section_number, course_id, semester, faculty_id, enrolled_students, year)
 VALUES (001, 'COMP1000', 'Spring', 1, 30, 2023),
-       (002, 'COMP1000', 'Fall', 2, 25, 2023),
-       (101, 'COMP1100', 'Spring', 3, 20, 2023),
-       (102, 'COMP1100', 'Fall', 4, 18, 2023),
-       (201, 'COMP1200', 'Spring', 5, 22, 2023),
-       (202, 'COMP1200', 'Fall', 6, 25, 2023),
-       (301, 'COMP2000', 'Spring', 7, 28, 2023),
-       (302, 'COMP2000', 'Fall', 8, 30, 2023),
-       (401, 'COMP3000', 'Spring', 9, 26, 2023),
-       (402, 'COMP3000', 'Fall', 10, 24, 2023);
+       (002, 'COMP1000', 'Fall', 2, 55, 2023),
+       (101, 'COMP1100', 'Spring', 3, 52, 2023),
+       (102, 'COMP1100', 'Fall', 4, 44, 2023),
+       (201, 'COMP1200', 'Spring', 5, 50, 2023),
+       (202, 'COMP1200', 'Fall', 6, 35, 2023),
+       (301, 'COMP2000', 'Spring', 7, 40, 2023),
+       (302, 'COMP2000', 'Fall', 8, 32, 2023),
+       (401, 'COMP3000', 'Spring', 9, 62, 2023),
+       (402, 'COMP3000', 'Fall', 10, 42, 2023),
+       (403, 'COMP3000', 'Spring', 1, 30, 2024);
 
 -- Programs
 INSERT IGNORE INTO university.programs (program_name, department_code, head_of_program_id)
@@ -64,14 +65,14 @@ VALUES ('BSKW1000', 'Basics of Basket Weaving', 'Introduction to basket weaving 
 
 -- Sections
 INSERT IGNORE INTO university.sections (section_number, course_id, semester, faculty_id, enrolled_students, year)
-VALUES (001, 'BSKW1000', 'Spring', 13, 20, 2023),
-       (002, 'BSKW1000', 'Summer', 14, 18, 2023),
-       (003, 'BSKW1000', 'Fall', 15, 22, 2023),
-       (101, 'BSKW1010', 'Spring', 16, 25, 2023),
-       (102, 'BSKW1010', 'Summer', 17, 28, 2023),
-       (103, 'BSKW1010', 'Fall', 18, 30, 2023),
-       (201, 'BSKW2020', 'Spring', 13, 26, 2023),
-       (301, 'BSKW3000', 'Fall', 14, 24, 2023);
+VALUES (001, 'BSKW1000', 'Spring', 13, 50, 2023),
+       (002, 'BSKW1000', 'Summer', 14, 40, 2023),
+       (003, 'BSKW1000', 'Fall', 15, 30, 2023),
+       (101, 'BSKW1010', 'Spring', 16, 65, 2023),
+       (102, 'BSKW1010', 'Summer', 17, 55, 2023),
+       (103, 'BSKW1010', 'Fall', 18, 43, 2023),
+       (201, 'BSKW2020', 'Spring', 13, 39, 2023),
+       (301, 'BSKW3000', 'Fall', 14, 51, 2023);
 
 -- Programs
 INSERT IGNORE INTO university.programs (program_name, department_code, head_of_program_id)
@@ -140,6 +141,7 @@ VALUES ('COMP1000', 'COMP1000', 001, 1, 'Spring', 'SUBOBJ1', 'Exam', 25, 2023),
        ('COMP2000', 'COMP2000', 302, 1, 'Fall', 'SUBOBJ4', 'Project', 26, 2023),
        ('COMP3000', 'COMP3000', 401, 1, 'Spring', 'SUBOBJ5', 'Quiz', 24, 2023),
        ('COMP3000', 'COMP3000', 402, 1, 'Fall', 'SUBOBJ5', 'Exam', 20, 2023),
+       ('COMP3000', 'COMP3000', 403, 1, 'Spring', 'SUBOBJ5', 'Exam', 30, 2024),
        ('BSKW1000', 'BSKW1000', 001, 2, 'Spring', 'SUBOBJ6', 'Project', 22, 2023),
        ('BSKW1000', 'BSKW1000', 002, 2, 'Summer', 'SUBOBJ6', 'Quiz', 18, 2023),
        ('BSKW1000', 'BSKW1000', 003, 2, 'Fall', 'SUBOBJ6', 'Exam', 25, 2023),
