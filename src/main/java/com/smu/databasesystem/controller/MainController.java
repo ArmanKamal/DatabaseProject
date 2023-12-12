@@ -26,7 +26,6 @@ public class MainController {
 
     @GetMapping("/")
     public String showView(@ModelAttribute("Departments") Departments departments,
-                           @ModelAttribute("Persons") Persons persons,
                            @ModelAttribute("Programs") Programs programs,
                            @ModelAttribute("FacultyMembers") FacultyMembers facultyMembers,
                            @ModelAttribute("Courses") Courses courses,
@@ -65,22 +64,6 @@ public class MainController {
             String failure = "Failed because of " + e;
             redirectAttributes.addFlashAttribute("failureMessage", failure);
 
-        }
-        return "redirect:/";
-    }
-
-    /* Create Person */
-    @PostMapping("/processPersonForm")
-    public String processPersonForm(@ModelAttribute("Persons") Persons persons, RedirectAttributes redirectAttributes) {
-        try {
-            jdbcTemplate.update("INSERT INTO Persons (university_id, person_name,email) VALUES (?, ?,?)",
-                    persons.getUniversityId(), persons.getPersonName(), persons.getEmail());
-
-            String successMessage = "Person Information for " + persons.getPersonName() + "' created successfully!";
-            redirectAttributes.addFlashAttribute("successMessage", successMessage);
-        } catch (Exception e) {
-            String failure = "Failed because of " + e;
-            redirectAttributes.addFlashAttribute("failureMessage", failure);
         }
         return "redirect:/";
     }
@@ -302,15 +285,6 @@ public class MainController {
         return jdbcTemplate.query(sql, (resultSet, rowNum) -> Departments.builder()
                 .departmentCode(resultSet.getString("department_code"))
                 .departmentName(resultSet.getString("department_name"))
-                .build());
-    }
-
-    private List<Persons> getPersons() {
-        String sql = "SELECT * FROM Persons";
-        return jdbcTemplate.query(sql, (resultSet, rowNum) -> Persons.builder()
-                .universityId(resultSet.getString("university_id"))
-                .personName(resultSet.getString("person_name"))
-                .email(resultSet.getString("email"))
                 .build());
     }
 
